@@ -1,0 +1,33 @@
+:root{
+    --bg:#0f1115;
+    --surface:#171a21;
+    --surface-2:#1c2028;
+    --surface-hover:#232834;
+    --surface-hover-2:#2d3443;
+    --row-hover:#1c212b;
+
+    --primary:#3b82f6;
+    --primary-hover:#2563eb;
+    --primary-dim:rgba(59,130,246,.12);
+
+    --text-primary:#fff;
+    --text-secondary:#8b95a5;
+    --text-tertiary:#5b6577;
+
+    --border:rgba(255,255,255,.06);
+
+    --success:#4ade80;
+    --success-bg:rgba(34,197,94,.1);
+
+    --warning:#fbbf24;
+    --warning-bg:rgba(245,158,11,.1);
+
+    --danger:#f87171;
+    --danger-bg:rgba(239,68,68,.1);
+
+    --purple:#c084fc;
+    --purple-bg:rgba(168,85,247,.1);
+
+    --journal:#11141a;
+    --mono:"IBM Plex Mono", monospace;
+}
