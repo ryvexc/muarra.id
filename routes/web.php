@@ -1,18 +1,30 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RegisteredUserController;
+use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\SupplyController;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\TenantController;
+use App\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [DashboardController::class, "index"])->name("dashboard.index");
+Route::get('/', [DashboardController::class, "index"])->name("dashboard.index")->middleware(Authenticate::class);
 Route::get("/orders", [OrderController::class, 'index'])->name("order.index");
+
+Route::prefix("/auth")->group(function () {
+  Route::get("/signin", [AuthController::class, 'signin'])->name("auth.signin");
+  Route::post("/login", [AuthController::class, 'login'])->name("login");
+  Route::get("/logout", [AuthController::class, 'logout'])->name("logout");
+})->middleware(Authenticate::class);
 
 Route::prefix("/products")->group(function () {
   Route::get("/", [ProductController::class, 'index'])->name("product.index");
@@ -21,7 +33,7 @@ Route::prefix("/products")->group(function () {
   Route::get("/edit/{id}", [ProductController::class, "editForm"])->name("product.edit.form");
   Route::put("/{id}", [ProductController::class, 'edit'])->name("product.edit");
   Route::delete("/{id}", [ProductController::class, 'delete'])->name("product.delete");
-});
+})->middleware(Authenticate::class);
 
 Route::prefix("/stocks")->group(function () {
   Route::get("/", [StockController::class, 'index'])->name("stock.index");
@@ -35,14 +47,39 @@ Route::prefix("/stocks")->group(function () {
     Route::get("/new", [StockOpnameController::class, 'new'])->name("stock-report.new");
     Route::post("/new", [StockOpnameController::class, 'createReport'])->name("stock-report.post");
   });
-});
+})->middleware(Authenticate::class);
 
 Route::prefix("/finance")->group(function () {
   Route::prefix("/wallet")->group(function () {
     Route::get('/main', [WalletController::class, 'main'])->name("wallet.main.index");
     Route::get('/tenant', [WalletController::class, 'tenant'])->name("wallet.tenant");
   });
-});
+})->middleware(Authenticate::class);
+
+Route::prefix("/tenants")->group(function () {
+  Route::get("/", [TenantController::class, 'index'])->name("tenant.index");
+  Route::post("/", [TenantController::class, 'post'])->name("tenant.post");
+  Route::put("/{id}", [TenantController::class, 'edit'])->name("tenant.edit");
+  Route::delete("/{id}", [TenantController::class, 'delete'])->name("tenant.delete");
+})->middleware(Authenticate::class);
+
+Route::prefix("/registered-users")->group(function () {
+  Route::get("/", [RegisteredUserController::class, 'index'])->name("registered-user.index");
+})->middleware(Authenticate::class);
+
+Route::prefix("/staff")->group(function () {
+  Route::get("/", [StaffController::class, 'index'])->name("staff.index");
+  Route::post("/", [StaffController::class, 'post'])->name("staff.post");
+  Route::put("/{id}", [StaffController::class, 'edit'])->name("staff.edit");
+  Route::delete("/{id}", [StaffController::class, 'delete'])->name("staff.delete");
+})->middleware(Authenticate::class);
+
+Route::prefix("/branch")->group(function () {
+  Route::get("/", [BranchController::class, 'index'])->name("branch.index");
+  Route::post("/", [BranchController::class, "post"])->name("branch.post");
+  Route::put("/{id}", [BranchController::class, 'edit'])->name("branch.edit");
+  Route::delete("/{id}", [BranchController::class, 'delete'])->name("branch.delete");
+})->middleware(Authenticate::class);
 
 Route::prefix("/categories")->group(function () {
   Route::get("/", [CategoryController::class, 'index'])->name("category.index");
@@ -55,18 +92,18 @@ Route::prefix("/categories")->group(function () {
     Route::put('/{id}', [CategoryController::class, 'editSubCategory'])->name("category.sub.edit");
     Route::delete('/{id}', [CategoryController::class, 'deleteSubCategory'])->name("category.sub.delete");
   });
-});
+})->middleware(Authenticate::class);
 
 Route::prefix("/supply")->group(function () {
   Route::get("/", [SupplyController::class, "index"])->name("supply.index");
   Route::post("/", [SupplyController::class, "post"])->name("supply.post");
-});
+})->middleware(Authenticate::class);
 
 Route::prefix("/discount")->group(function () {
   Route::get("/", [DiscountController::class, "index"])->name('discount.index');
   Route::post("/", [DiscountController::class, "post"])->name('discount.post');
   Route::put("/{id}", [DiscountController::class, "edit"])->name('discount.edit');
-});
+})->middleware(Authenticate::class);
 
 Route::get('/test-log', function () {
   \App\Helpers\JournalHelper::event('TEST', [
@@ -74,7 +111,7 @@ Route::get('/test-log', function () {
   ]);
 
   return 'done';
-});
+})->middleware(Authenticate::class);
 
 Route::prefix("journal")->group(function () {
   Route::get("/event", function () {
@@ -91,4 +128,4 @@ Route::prefix("journal")->group(function () {
 
     return view("page.journal.event", compact("logs"));
   });
-});
+})->middleware(Authenticate::class);

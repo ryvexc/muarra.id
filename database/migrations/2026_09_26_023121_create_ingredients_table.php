@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('ingredients', function (Blueprint $table) {
             $table->id();
+            $table->foreignId("tenant_id")->nullable()->references("id")->on("users")->onDelete("SET NULL");
             $table->string("name");
             $table->integer("stock");
             $table->foreignId("unit_of_measurement_id")->references("id")->on("units");

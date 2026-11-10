@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('supplies', function (Blueprint $table) {
             $table->id();
+            $table->foreignId("tenant_id")->nullable()->references("id")->on("tenants")->onDelete("SET NULL");
             $table->foreignId("ingredient_id")->references("id")->on("ingredients");
             $table->integer("quantity");
             $table->foreignId("stock_report_id")->nullable()->references("id")->on("stock_reports");

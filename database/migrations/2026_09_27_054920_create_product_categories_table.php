@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('product_categories', function (Blueprint $table) {
             $table->id();
+            $table->foreignId("tenant_id")->nullable()->references("id")->on("users")->onDelete("SET NULL");
             $table->string('name');
             $table->timestamp("deleted_at")->nullable();
             $table->timestamps();

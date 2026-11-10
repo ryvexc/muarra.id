@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('product_ingredients', function (Blueprint $table) {
             $table->id();
+            $table->foreignId("tenant_id")->nullable()->references("id")->on("users")->onDelete("SET NULL");
             $table->foreignId("product_id")->references("id")->on("products");
             $table->foreignId("ingredient_id")->references("id")->on("ingredients");
             $table->integer("quantity");

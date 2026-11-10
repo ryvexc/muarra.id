@@ -9,6 +9,7 @@ use App\Models\ProductIngredient;
 use App\Models\ProductSubCategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
@@ -44,6 +45,7 @@ class ProductController extends Controller
         DB::transaction(function () use ($request) {
 
             $product = new Product();
+            $product->tenant_id = Auth::user()->tenant->id;
             $product->name = $request->name;
             $product->product_category_id = $request->product_category_id;
             $product->product_subcategory_id = $request->product_subcategory_id;
@@ -54,6 +56,7 @@ class ProductController extends Controller
             foreach ($request->ingredients ?? [] as $item) {
 
                 $productIngredient = new ProductIngredient();
+                $productIngredient->tenant_id = Auth::user()->tenant->id;
                 $productIngredient->product_id = $product->id;
                 $productIngredient->ingredient_id = $item['ingredient_id'];
                 $productIngredient->quantity = $item['quantity'];

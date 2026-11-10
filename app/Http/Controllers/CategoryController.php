@@ -6,6 +6,7 @@ use App\Models\ProductCategory;
 use App\Models\ProductSubCategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -23,6 +24,7 @@ class CategoryController extends Controller
     public function postCategory(Request $request)
     {
         $product_category = new ProductCategory();
+        $product_category->tenant_id = Auth::user()->tenant->id;
         $product_category->name = $request->name;
         $product_category->save();
 
@@ -50,6 +52,7 @@ class CategoryController extends Controller
     public function postSubCategory(Request $request)
     {
         $product_sub_category = new ProductSubCategory;
+        $product_sub_category->tenant_id = Auth::user()->tenant->id;
         $product_sub_category->product_category_id = $request->product_category_id;
         $product_sub_category->name = $request->name;
         $product_sub_category->save();

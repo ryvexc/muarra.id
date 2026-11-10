@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Discount;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DiscountController extends Controller
 {
@@ -19,6 +20,7 @@ class DiscountController extends Controller
     public function post(Request $request)
     {
         $discount = new Discount();
+        $discount->tenant_id = Auth::user()->tenant->id;
         $discount->name = $request->name;
         $discount->value = str_replace(".", "", $request->value);
         $discount->type = $request->type;
