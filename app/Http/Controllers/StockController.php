@@ -14,12 +14,10 @@ class StockController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-
         $ingredients = Ingredient::all()->whereNull("deleted_at");
         $units = Unit::all();
 
-        $inventories = Inventory::all()->where("tenant_id", $user->tenant_id);
+        $inventories = Inventory::all()->where("tenant_id", currentUser()->tenant->id);
 
         return view("page.stock.index", [
             "ingredients" => $ingredients,
