@@ -17,20 +17,6 @@
             </div>
             <div>
                 <div class="card">
-                    {{-- <div class="toolbar">
-                        <div class="search">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2">
-                                <circle cx="11" cy="11" r="7" />
-                                <path d="m21 21-4.3-4.3" />
-                            </svg>
-                            <input placeholder="Im looking for...">
-                        </div>
-                        
-                        <div class="toolbar-right">
-                            <button class="btn">Export</button>
-                        </div>
-                    </div> --}}
-                    
                     <div class="table-wrap">
                         <table>
                             <thead>

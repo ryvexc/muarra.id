@@ -7,13 +7,17 @@
         <div class="logo-text">
             <h1>Muarra POS</h1>
             @auth
-                <p>{{ auth()->user()->tenant->name }}</p>
+                @if (auth()->user()->role_id == 1)
+                    <p>{{ auth()->user()->name }}</p>
+                @else
+                    <p>{{ auth()->user()->tenant->name }}</p>
+                @endif
             @endauth
         </div>
     </div>
 
     <nav>
-        @if(auth()->user()->role->id == 2)
+        @if(auth()->user()->role_id == 2)
             {{-- Main Menu --}}
             <div class="menu-group">
                 <span class="menu-title">Main Menu</span>

@@ -37,6 +37,7 @@
                                 <th style="width: 0;">ID BARANG</th>
                                 <th style="width: 0;">NAMA BARANG</th>
                                 <th style="width: 0;">JUMLAH</th>
+                                <th style="width: 0;">BRANCH</th>
                                 <th style="">SATUAN</th>
                                 <th style="width: 0; text-align: right">CREATED AT</th>
                             </tr>
@@ -50,6 +51,7 @@
                                     <td>#{{ $supply->ingredient->normalizedId() }}</td>
                                     <td>{{ $supply->ingredient->name }}</td>
                                     <td style="text-align: right">{{ $supply->quantity }}</td>
+                                    <td>{{ $supply->branch->name }}</td>
                                     <td>{{ $supply->ingredient->unit_of_measurement->symbol }}</td>
                                     <td class="date-cell" style="text-align: right">{{ $supply->created_at }}</td>
                                 </tr>
@@ -96,8 +98,21 @@
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
+                            <label>Branch</label>
+                            <select name="branch_id" required>
+                                <option value="" selected disabled>-- SELECT BRANCH --</option>
+
+                                @foreach ($branches as $branch)
+                                    <option value="{{ $branch->id }}">#{{ $branch->normalizedId() }} - {{ $branch->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
                             <label>Barang</label>
-                            <select name="ingredient_id">
+                            <select name="ingredient_id" required>
+                                <option value="" selected disabled>-- SELECT ITEM --</option>
+
                                 @foreach ($ingredients as $ingredient)
                                     <option value="{{ $ingredient->id }}">#{{ $ingredient->normalizedId() }} - {{ $ingredient->name }}</option>
                                 @endforeach
@@ -106,7 +121,7 @@
 
                         <div class="form-group">
                             <label>Quantity</label>
-                            <input type="number" placeholder="0" name="quantity">
+                            <input type="number" placeholder="0" name="quantity" required>
                         </div>
                     </div>
 

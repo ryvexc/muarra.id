@@ -57,7 +57,7 @@
                                     </td>
                                     <td>{{ $ingredient->name }}</td>
                                     <td style="text-align: {{ $hasSupply ? 'left' : 'center' }}">
-                                        {{ $ingredient->stock }}
+                                        {{ $ingredient->inventory->sum("stock") }}
 
                                         @if ($ingredient->supplies->whereNull("stock_report_id")->count() > 0)
                                             <span
@@ -131,11 +131,6 @@
                         <div class="form-group">
                             <label>Ingredient Name</label>
                             <input type="text" placeholder="Example: Sugar" name="name" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Stock</label>
-                            <input type="number" placeholder="0" name="stock" required>
                         </div>
 
                         <div style="display: flex; gap: 20px">

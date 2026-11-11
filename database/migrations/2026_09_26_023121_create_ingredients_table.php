@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId("tenant_id")->nullable()->references("id")->on("users")->onDelete("SET NULL");
             $table->string("name");
-            $table->integer("stock");
+            // $table->integer("stock");
             $table->foreignId("unit_of_measurement_id")->references("id")->on("units");
             $table->bigInteger("harga_satuan");
             $table->timestamp("deleted_at")->nullable();

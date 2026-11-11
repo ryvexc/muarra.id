@@ -29,6 +29,11 @@ class Ingredient extends Model
         return $this->belongsTo(Unit::class, "unit_of_measurement_id");
     }
 
+    public function inventory()
+    {
+        return $this->hasMany(Inventory::class);
+    }
+
     public function getSupplyInAttribute(): int
     {
         return $this->supplies()

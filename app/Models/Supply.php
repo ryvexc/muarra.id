@@ -16,4 +16,9 @@ class Supply extends Model
     {
         return $this->belongsTo(Ingredient::class, "ingredient_id", "id");
     }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
 }
