@@ -35,7 +35,7 @@
                             <tr>
                                 <th rowspan="2">ID</th>
                                 <th rowspan="2">NAMA PENCATAT</th>
-                                <th rowspan="2">CABANG</th>
+                                <th rowspan="2">BRANCH</th>
 
                                 <th colspan="2">STOCK SURPLUS</th>
                                 <th colspan="2">STOCK SHORTAGE</th>
@@ -74,10 +74,10 @@
                                         </td>
                                         <td>
                                             <div class="cashier">
-                                                <div class="avatar">A</div>Arif
+                                                <div class="avatar">{{ $stockReport->staff->name[0] ?? "" }}</div>{{ $stockReport->staff->name }}
                                             </div>
                                         </td>
-                                        <td>Kopi 1</td>
+                                        <td>{{ $stockReport->branch->name }}</td>
 
                                         <td style="text-align: center; color: {{ $stockReport->stock_surplus_count > 0 ? '#fbbf24' : 'inherit' }}">
                                             {{ $stockReport->stock_surplus_count }}
@@ -93,7 +93,7 @@
                                             {{ App\Support\Currency::format("IDR", $stockReport->stock_shortage_value) }}
                                         </td>
 
-                                        <td style="text-align: center">{{ $stockReport->stock_matched_count }}</td>
+                                        <td style="text-align: center">{{ $stockReport->stock_matched_count }}/{{ App\Models\StockReportItem::where("stock_report_id", $stockReport->id)->count() }}</td>
                                         <td>
                                             @if ($stockReport->status === 'shortage')
                                                 <span class="badge danger">Shortage</span>

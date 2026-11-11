@@ -18,4 +18,14 @@ class StockReport extends Model
     {
         return $this->hasOne(StockReportItem::class);
     }
+
+    public function staff()
+    {
+        return $this->belongsTo(Staff::class);
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
 }

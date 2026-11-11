@@ -6,13 +6,15 @@
 
         <div class="logo-text">
             <h1>Muarra POS</h1>
-            @auth
+            @authany
                 @if (currentUser()->role_id == 1)
                     <p>{{ currentUser()->name }}</p>
+                @elseif (currentUser()->role_id == 3)
+                    <p>{{ currentUser()->branch->name }}</p>
                 @else
                     <p>{{ currentUser()->tenant->name }}</p>
                 @endif
-            @endauth
+            @endauthany
         </div>
     </div>
 

@@ -37,8 +37,8 @@
                                 <th style="width: 0;">ID BARANG</th>
                                 <th style="width: 0;">NAMA BARANG</th>
                                 <th style="width: 0;">JUMLAH</th>
-                                <th style="width: 0;">BRANCH</th>
-                                <th style="">SATUAN</th>
+                                <th style="width: 0;">SATUAN</th>
+                                <th style="">BRANCH</th>
                                 <th style="width: 0; text-align: right">CREATED AT</th>
                             </tr>
                         </thead>
@@ -51,8 +51,8 @@
                                     <td>#{{ $supply->ingredient->normalizedId() }}</td>
                                     <td>{{ $supply->ingredient->name }}</td>
                                     <td style="text-align: right">{{ $supply->quantity }}</td>
-                                    <td>{{ $supply->branch->name }}</td>
                                     <td>{{ $supply->ingredient->unit_of_measurement->symbol }}</td>
+                                    <td>{{ $supply->branch->name }}</td>
                                     <td class="date-cell" style="text-align: right">{{ $supply->created_at }}</td>
                                 </tr>
                             @empty

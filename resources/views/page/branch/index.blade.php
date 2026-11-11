@@ -50,10 +50,14 @@
                                     </td>
                                     <td>{{ $branch->name }}</td>
                                     <td>
-                                        <div>
-                                            <span>{{ $branch->manager->name }}</span>
-                                            <p>{{ $branch->manager->email }}</p>
-                                        </div>
+                                        @if($branch->manager)
+                                            <div>
+                                                <span>{{ $branch->manager->name }}</span>
+                                                <p>{{ $branch->manager->email }}</p>
+                                            </div>
+                                        @else
+                                            -
+                                        @endif
                                     </td>
                                     <td>{{ $branch->address }}</td>
                                     <td class="date-cell" style="text-align: right">{{ $branch->updated_at }}</td>
@@ -121,7 +125,7 @@
 
                         <div class="form-group">
                             <label>Manager</label>
-                            <select name="manager_id" required>
+                            <select name="manager_id">
                                 <option value="" selected disabled>-- Select Manager --</option>
                                 
                                 @foreach ($managers as $manager)
@@ -182,7 +186,7 @@
                                     <option value="" selected disabled>-- Select User --</option>
                                     
                                     @foreach ($managers as $manager)
-                                        <option value="{{ $manager->id }}" @selected($manager->id == $branch->manager->id)>{{ $manager->name }} - {{ $manager->email }}</option>
+                                        <option value="{{ $manager->id }}" @selected($manager->id == ($branch->manager->id ?? 0))>{{ $manager->name }} - {{ $manager->email }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -233,11 +237,11 @@
     
                                 <li>
                                     <span class="label">Manager</span>
-                                    <span class="value">{{ $branch->manager->name }}</span>
+                                    <span class="value">{{ $branch->manager->name ?? "-" }}</span>
                                 </li>
                                 <li>
                                     <span class="label">Owner Email</span>
-                                    <span class="value">{{ $branch->manager->email }}</span>
+                                    <span class="value">{{ $branch->manager->email ?? "-" }}</span>
                                 </li>
                             </ul>
                         </div>

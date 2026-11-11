@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\JournalHelper;
+use App\Models\Branch;
 use App\Models\Ingredient;
 use App\Models\Inventory;
 use App\Models\Unit;
@@ -29,10 +30,22 @@ class StockController extends Controller
     public function post(Request $request)
     {
         $ingredient = new Ingredient;
+        $ingredient->tenant_id = currentUser()->tenant->id;
         $ingredient->name = $request->name;
         $ingredient->unit_of_measurement_id = $request->unit_of_measurement_id;
         $ingredient->harga_satuan = str_replace(".", "", $request->harga_satuan);
         $ingredient->save();
+
+        $branches = Branch::all()->where("tenant_id", currentUser()->tenant->id);
+
+        foreach ($branches as $branch) {
+            $inventory = new Inventory();
+            $inventory->branch_id = $branch->id;
+            $inventory->tenant_id = currentUser()->tenant->id;
+            $inventory->ingredient_id = $ingredient->id;
+            $inventory->stock = 0;
+            $inventory->save();
+        }
 
         JournalHelper::event('INGREDIENT_CREATED', [
             'message' => "#" . $ingredient->normalizedId() . "\t" . $ingredient->name . "\t" . $ingredient->stock . "\t" . $ingredient->unit_of_measurement

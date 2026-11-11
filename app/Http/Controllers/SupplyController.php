@@ -28,7 +28,7 @@ class SupplyController extends Controller
     public function post(Request $request)
     {
         $supply = new Supply;
-        $supply->tenant_id = Auth::user()->tenant->id;
+        $supply->tenant_id = currentUser()->tenant->id;
         $supply->ingredient_id = $request->ingredient_id;
         $supply->quantity = $request->quantity;
         $supply->branch_id = $request->branch_id;
@@ -39,7 +39,7 @@ class SupplyController extends Controller
         ]);
 
         $inventory = Inventory::firstOrNew([
-            'tenant_id' => Auth::user()->tenant->id,
+            'tenant_id' => currentUser()->tenant->id,
             'branch_id' => $request->branch_id,
             'ingredient_id' => $request->ingredient_id,
         ]);

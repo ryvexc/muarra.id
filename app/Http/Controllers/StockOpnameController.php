@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ingredient;
+use App\Models\Inventory;
 use App\Models\StockReport;
 use App\Models\StockReportItem;
 use App\Models\Supply;
@@ -62,7 +63,7 @@ class StockOpnameController extends Controller
                 )->sum('quantity');
 
                 $ingredient->opening_stock =
-                    $ingredient->stock - $supply;
+                    $ingredient->inventory->where("branch_id", currentUser()->branch->id)->first()->stock - $supply;
             }
 
             return $ingredient;
@@ -79,8 +80,8 @@ class StockOpnameController extends Controller
         DB::transaction(function () use ($request) {
 
             $stockReport = new StockReport();
-            $stockReport->cashier_name = "Yanto";
-            $stockReport->cabang = "Malang";
+            $stockReport->staff_id = currentUser()->id;
+            $stockReport->branch_id = currentUser()->branch->id;
             $stockReport->stock_matched_count = 0;
             $stockReport->stock_surplus_count = 0;
             $stockReport->stock_surplus_value = 0;
@@ -134,7 +135,10 @@ class StockOpnameController extends Controller
                 $stockReportItem->notes = $item['notes'] ?? null;
                 $stockReportItem->save();
 
-                $ingredient->stock = $item['actual_stock'] ?? 0;
+                $inventory = Inventory::where("branch_id", currentUser()->branch->id)->where("tenant_id", currentUser()->tenant->id)->where("ingredient_id", $ingredient->id)->first();
+                $inventory->stock = $item['actual_stock'] ?? 0;
+                $inventory->save();
+
                 $ingredient->save();
             }
 

@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('stock_reports', function (Blueprint $table) {
             $table->id();
-            $table->string("cashier_name");
-            $table->string("cabang");
+            $table->foreignId("tenant_id")->nullable()->references("id")->on("tenants")->onDelete("SET NULL");
+            $table->foreignId("branch_id")->nullable()->references("id")->on("branches")->onDelete("SET NULL");
+            $table->foreignId("staff_id")->nullable()->references("id")->on("staffs")->onDelete("SET NULL");
             $table->integer("stock_matched_count");
             $table->integer("stock_surplus_count");
             $table->integer("stock_surplus_value");

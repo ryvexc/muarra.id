@@ -20,7 +20,7 @@ class AnyAuthentication
             !Auth::guard('web')->check() &&
             !Auth::guard('staff')->check()
         ) {
-            return redirect()->route('login');
+            return redirect()->route('auth.signin');
         }
 
         return $next($request);
