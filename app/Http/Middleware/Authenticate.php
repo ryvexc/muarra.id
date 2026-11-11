@@ -16,7 +16,7 @@ class Authenticate
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::user()) {
+        if (!Auth::guard("web")->user()) {
             return redirect()->route("auth.signin");
         }
 

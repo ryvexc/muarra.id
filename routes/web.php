@@ -14,10 +14,12 @@ use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\SupplyController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\TenantController;
+use App\Http\Middleware\AnyAuthentication;
 use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\StaffAuthentication;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [DashboardController::class, "index"])->name("dashboard.index")->middleware(Authenticate::class);
+Route::get('/', [DashboardController::class, "index"])->name("dashboard.index")->middleware(AnyAuthentication::class);
 Route::get("/orders", [OrderController::class, 'index'])->name("order.index");
 
 Route::prefix("/auth")->group(function () {
