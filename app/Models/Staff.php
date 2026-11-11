@@ -18,7 +18,7 @@ use Illuminate\Notifications\Notifiable;
     'role_id',
 ])]
 #[Hidden(['password', 'remember_token'])]
-class Staff extends Model
+class Staff extends Authenticatable
 {
     use HasNormalizedId, Notifiable;
 
