@@ -24,7 +24,7 @@ class BranchController extends Controller
 
     public function post(Request $request)
     {
-        $manager = Staff::all()->where("role_id", 3)->where("user_id", $request->manager_id)->first();
+        $manager = Staff::all()->where("role_id", 3)->where("id", $request->manager_id)->first();
 
         if (!$manager) {
             return redirect()->back()->withErrors([
@@ -47,7 +47,7 @@ class BranchController extends Controller
 
     public function edit(Request $request, string $id)
     {
-        $manager = Staff::all()->where("role_id", 3)->where("user_id", $request->manager_id)->first();
+        $manager = Staff::all()->where("role_id", 3)->where("id", $request->manager_id)->first();
 
         if (!$manager) {
             return redirect()->back()->withErrors([
