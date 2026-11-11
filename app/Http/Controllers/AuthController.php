@@ -21,7 +21,13 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::guard("web")->attempt($credentials)) {
+            $request->session()->regenerate();
+
+            return redirect()->intended('/');
+        }
+
+        if (Auth::guard("staff")->attempt($credentials)) {
             $request->session()->regenerate();
 
             return redirect()->intended('/');
@@ -34,7 +40,8 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard("web")->logout();
+        Auth::guard("staff")->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
