@@ -15,15 +15,19 @@ class StockController extends Controller
 {
     public function index()
     {
-        $ingredients = Ingredient::all()->whereNull("deleted_at");
-        $units = Unit::all();
+        $user = currentUser();
 
-        $inventories = Inventory::all()->where("tenant_id", currentUser()->tenant->id);
+        $ingredients = Ingredient::all()->where("tenant_id", $user->tenant->id)->whereNull("deleted_at");
+        $units = Unit::all();
+        $branches = Branch::all()->where("tenant_id", $user->tenant->id);
+
+        $inventories = Inventory::all()->where("tenant_id", $user->tenant->id);
 
         return view("page.stock.index", [
             "ingredients" => $ingredients,
             "units" => $units,
-            "inventories" => $inventories
+            "inventories" => $inventories,
+            "branches" => $branches
         ]);
     }
 

@@ -26,6 +26,19 @@
             </button>
         </div>
         <div>
+            <div style="display: inline-flex">
+                <div class="form-group " style="width: 100%">
+                    <label>Branch</label>
+                    <select name="unit_of_measurement_id" required>
+                        <option value="" selected disabled>All</option>
+
+                        @foreach ($branches as $branch)
+                            <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
             <div class="card">
                 <div class="toolbar">
                     <div class="search">

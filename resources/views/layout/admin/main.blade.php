@@ -87,6 +87,25 @@
     });
     </script>
 
+    <script>
+        function filter(element) {
+            const url = new URL(window.location.href);
+
+            const name = element.name;
+            const value = element.value;
+
+            if (value) {
+                url.searchParams.set(name, value);
+            } else {
+                url.searchParams.delete(name);
+            }
+
+            url.searchParams.delete('page');
+
+            window.location.href = url.toString();
+        }
+    </script>
+
   @yield("script")
 </body>
 

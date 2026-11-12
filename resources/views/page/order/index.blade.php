@@ -14,6 +14,59 @@
             </button> --}}
         </div>
         <div>
+            <div style="display: flex; justify-content: space-between; width: 100%">
+                <div style="display: inline-flex; gap:16px; margin-bottom: 20px;">
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>Branch</label>
+                        <select name="branch_id" required
+                            onchange="filter(this)"
+                        >
+                            <option value="" selected>All</option>
+
+                            @foreach ($branches as $branch)
+                                <option value="{{ $branch->id }}" @selected(request('branch_id') == $branch->id)>{{ $branch->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>Cashier</label>
+                        <select name="cashier_id" required
+                            onchange="filter(this)"
+                        >
+                            <option value="" selected>All</option>
+
+                            @foreach ($cashiers as $cashier)
+                                <option value="{{ $cashier->id }}" @selected(request('cashier_id') == $cashier->id)>{{ $cashier->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>Payment Type</label>
+                        <select name="payment_type" required
+                            onchange="filter(this)"
+                        >
+                            <option value="" selected>All</option>
+
+                            @foreach (["Card", "Cash", "Qris"] as $payment_type)
+                                <option value="{{ strtolower($payment_type) }}" @selected(request('payment_type') == strtolower($payment_type))>{{ $payment_type }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: inline-flex">
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label style="text-align: right">Export</label>
+                        <button class="btn-success">
+                            <i class="fa-solid fa-file-excel"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+
             <div class="card">
                 <div class="toolbar">
                     <div class="search">
@@ -25,7 +78,6 @@
                     </div>
                     
                     <div class="toolbar-right">
-                        <button class="btn">Export</button>
                     </div>
                 </div>
                 
@@ -90,12 +142,7 @@
                 </div>
                 
                 <div class="footer">
-                    <span>Showing 3 dari 128</span>
-                    <div class="pagination">
-                        <button class="active">1</button>
-                        <button>2</button>
-                        <button>3</button>
-                    </div>
+                    {{ $orders->links() }}
                 </div>
             </div>
         </div>

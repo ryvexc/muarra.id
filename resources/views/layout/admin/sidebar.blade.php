@@ -99,6 +99,14 @@
 
                 </a>
 
+                <a class="menu-item {{ request()->routeIs('inventory-history.index') ? 'active' : '' }}"
+                    href="{{ route('inventory-history.index') }}">
+
+                    <i class="fa-solid fa-truck"></i>
+                    <span>History</span>
+
+                </a>
+
                 <a class="menu-item {{ request()->routeIs('stock-report.*') ? 'active' : '' }}"
                     href="{{ route('stock-report.index') }}">
 
