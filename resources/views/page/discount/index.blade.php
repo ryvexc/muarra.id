@@ -12,10 +12,12 @@
                 <p>Manage your active discounts.</p>
             </div>
             
-            <button class="btn-primary open-modal" data-modal="addModal">
-                <i class="fa-solid fa-plus"></i>
-                New Discount
-            </button>
+            @if (currentUser()->role->id == 2)
+                <button class="btn-primary open-modal" data-modal="addModal">
+                    <i class="fa-solid fa-plus"></i>
+                    New Discount
+                </button>
+            @endif
         </div>
         <div>
             <div class="card">
@@ -37,7 +39,7 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 0;">ID</th>
+                                <th style="width: 0;">DISCOUNT ID</th>
                                 <th style="width: 0;">NAMA DISKON</th>
                                 <th style="width: 0;">VALUE</th>
                                 <th style="width: 0;">EXPIRY DATE</th>

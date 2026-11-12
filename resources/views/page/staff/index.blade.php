@@ -8,10 +8,12 @@
                 <p>Manage all staff in one place.</p>
             </div>
             
-            <button class="btn-primary open-modal" data-modal="addCategoryModal">
-                <i class="fa-solid fa-plus"></i>
-                New Staff
-            </button>
+            @if (currentUser()->role->id == 2)
+                <button class="btn-primary open-modal" data-modal="addCategoryModal">
+                    <i class="fa-solid fa-plus"></i>
+                    New Staff
+                </button>
+            @endif
         </div>
         <div>
             <div class="card">

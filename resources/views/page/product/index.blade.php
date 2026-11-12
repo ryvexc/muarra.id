@@ -8,10 +8,12 @@
                 <p>Manage all products in one place.</p>
             </div>
             
-            <a class="btn-primary" href="{{ route('product.create') }}">
-                <i class="fa-solid fa-plus"></i>
-                New Product
-            </a>
+            @if (currentUser()->role->id == 2)
+                <a class="btn-primary" href="{{ route('product.create') }}">
+                    <i class="fa-solid fa-plus"></i>
+                    New Product
+                </a>
+            @endif
         </div>
         <div>
             <div class="card">

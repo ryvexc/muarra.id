@@ -8,10 +8,12 @@
                 <p>Manage your stocks.</p>
             </div>
             
-            <a class="btn-primary" href="{{ route('stock-report.new') }}">
-                <i class="fa-solid fa-plus"></i>
-                New Report
-            </a>
+            @if (currentUser()->role->id == 3)
+                <a class="btn-primary" href="{{ route('stock-report.new') }}">
+                    <i class="fa-solid fa-plus"></i>
+                    New Report
+                </a>
+            @endif
         </div>
         <div>
             <div class="card">
@@ -34,7 +36,7 @@
                         <thead>
                             <tr>
                                 <th rowspan="2">ID</th>
-                                <th rowspan="2">NAMA PENCATAT</th>
+                                <th rowspan="2">STAFF</th>
                                 <th rowspan="2">BRANCH</th>
 
                                 <th colspan="2">STOCK SURPLUS</th>

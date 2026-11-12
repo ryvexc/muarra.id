@@ -31,28 +31,22 @@ class SupplyController extends Controller
         $supply->tenant_id = currentUser()->tenant->id;
         $supply->ingredient_id = $request->ingredient_id;
         $supply->quantity = $request->quantity;
-        $supply->branch_id = $request->branch_id;
+        $supply->branch_id = $request->branch_id ?? currentUser()->branch->id;
         $supply->save();
 
-        JournalHelper::event('SUPPLY_RECEIVED', [
-            'message' => "#" . $supply->normalizedId() . "\t" . $supply->ingredient->name . "\t" . $supply->quantity
-        ]);
+        // JournalHelper::event('SUPPLY_RECEIVED', [
+        //     'message' => "#" . $supply->normalizedId() . "\t" . $supply->ingredient->name . "\t" . $supply->quantity
+        // ]);
 
         $inventory = Inventory::firstOrNew([
             'tenant_id' => currentUser()->tenant->id,
-            'branch_id' => $request->branch_id,
+            'branch_id' => $request->branch_id ?? currentUser()->branch->id,
             'ingredient_id' => $request->ingredient_id,
         ]);
 
         $inventory->stock = ($inventory->stock ?? 0) + $supply->quantity;
 
         $inventory->save();
-
-        // $ingredient = Ingredient::find($request->ingredient_id);
-        // $old_ingredient_stock = $ingredient->stock;
-
-        // $ingredient->stock = $ingredient->stock + $supply->quantity;
-        // $ingredient->save();
 
         // JournalHelper::event('INGREDIENT_STOCK_UPDATED', [
         //     'message' => "#" . $ingredient->normalizedId() . "\t" . $ingredient->name . "\t" . $old_ingredient_stock . "+" . $supply->quantity . "\t" . $ingredient->stock

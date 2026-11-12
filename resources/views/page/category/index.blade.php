@@ -8,10 +8,12 @@
                 <p>Manage all categories in one place.</p>
             </div>
             
-            <button class="btn-primary open-modal" data-modal="addCategoryModal">
-                <i class="fa-solid fa-plus"></i>
-                New Category
-            </button>
+            @if (currentUser()->role->id == 2)
+                <button class="btn-primary open-modal" data-modal="addCategoryModal">
+                    <i class="fa-solid fa-plus"></i>
+                    New Category
+                </button>
+            @endif
         </div>
         <div>
             <div class="card">
@@ -99,10 +101,12 @@
                 <p>Manage all categories in one place.</p>
             </div>
             
-            <button class="btn-primary open-modal" data-modal="addSubcategoryModal">
-                <i class="fa-solid fa-plus"></i>
-                New Subcategory
-            </button>
+            @if (currentUser()->role->id == 2)
+                <button class="btn-primary open-modal" data-modal="addSubcategoryModal">
+                    <i class="fa-solid fa-plus"></i>
+                    New Subcategory
+                </button>
+            @endif
         </div>
         <div>
             <div class="card">

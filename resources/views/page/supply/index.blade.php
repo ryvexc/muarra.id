@@ -97,16 +97,18 @@
                 <form method="POST" action="{{ route('supply.post') }}">
                     @csrf
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label>Branch</label>
-                            <select name="branch_id" required>
-                                <option value="" selected disabled>-- SELECT BRANCH --</option>
+                        @if (currentUser()->role->id == 2)
+                            <div class="form-group">
+                                <label>Branch</label>
+                                <select name="branch_id" required>
+                                    <option value="" selected disabled>-- SELECT BRANCH --</option>
 
-                                @foreach ($branches as $branch)
-                                    <option value="{{ $branch->id }}">#{{ $branch->normalizedId() }} - {{ $branch->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                                    @foreach ($branches as $branch)
+                                        <option value="{{ $branch->id }}">#{{ $branch->normalizedId() }} - {{ $branch->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
 
                         <div class="form-group">
                             <label>Barang</label>
