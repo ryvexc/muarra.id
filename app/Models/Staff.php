@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 #[Fillable([
     'name',
@@ -20,7 +21,7 @@ use Illuminate\Notifications\Notifiable;
 #[Hidden(['password', 'remember_token'])]
 class Staff extends Authenticatable
 {
-    use HasNormalizedId, Notifiable;
+    use HasNormalizedId, HasApiTokens, Notifiable;
 
     public const ID_PREFIX = "STF";
     public const ID_NUMBER_LENGTH = 4;

@@ -48,7 +48,7 @@ class ProductController extends Controller
             $product->tenant_id = Auth::user()->tenant->id;
             $product->name = $request->name;
             $product->product_category_id = $request->product_category_id;
-            $product->product_subcategory_id = $request->product_subcategory_id;
+            $product->product_subcategory_id = $request->product_subcategory_id ?? NULL;
             $product->harga_jual = str_replace(".", "", $request->harga_jual);
             $product->harga_modal = str_replace(".", "", $request->harga_modal);
             $product->save();
