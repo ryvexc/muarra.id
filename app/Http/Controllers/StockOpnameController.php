@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ingredient;
 use App\Models\Inventory;
+use App\Models\InventoryHistory;
 use App\Models\StockReport;
 use App\Models\StockReportItem;
 use App\Models\Supply;
@@ -80,6 +81,7 @@ class StockOpnameController extends Controller
         DB::transaction(function () use ($request) {
 
             $stockReport = new StockReport();
+            $stockReport->tenant_id = currentUser()->tenant->id;
             $stockReport->staff_id = currentUser()->id;
             $stockReport->branch_id = currentUser()->branch->id;
             $stockReport->stock_matched_count = 0;
@@ -136,8 +138,24 @@ class StockOpnameController extends Controller
                 $stockReportItem->save();
 
                 $inventory = Inventory::where("branch_id", currentUser()->branch->id)->where("tenant_id", currentUser()->tenant->id)->where("ingredient_id", $ingredient->id)->first();
+
+                $stock_before = $inventory->stock;
                 $inventory->stock = $item['actual_stock'] ?? 0;
                 $inventory->save();
+
+                $history = new InventoryHistory();
+                $history->tenant_id = currentUser()->tenant->id;
+                $history->branch_id = currentUser()->branch->id;
+                $history->ingredient_id = $item["ingredient_id"];
+                $history->type = "adjustment";
+                $history->quantity = $inventory->stock - $stock_before;
+                $history->stock_before = $stock_before;
+                $history->stock_after = $inventory->stock;
+                $history->reference_type = "stock report";
+                $history->reference_id = $stockReport->id;
+                $history->notes = "Adjustment by Stock Report #" . $stockReport->normalizedId();
+                $history->created_by_staff_id = currentUser()->id;
+                $history->save();
 
                 $ingredient->save();
             }
@@ -161,7 +179,11 @@ class StockOpnameController extends Controller
             $stockReport->status = $status;
             $stockReport->save();
 
-            Supply::whereNull('stock_report_id')->update([
+            Supply::where("tenant_id", currentUser()->tenant->id)->where("branch_id", currentUser()->branch->id)->whereNull('stock_report_id')->update([
+                'stock_report_id' => $stockReport->id
+            ]);
+
+            InventoryHistory::where("tenant_id", currentUser()->tenant->id)->where("branch_id", currentUser()->branch->id)->whereNull("stock_report_id")->update([
                 'stock_report_id' => $stockReport->id
             ]);
         });

@@ -4,6 +4,12 @@
     $hasSupply = $ingredients->contains(function ($ingredient) {
         return $ingredient->supplies->whereNull('stock_report_id')->isNotEmpty();
     });
+
+    $hasOutgoingStock = $ingredients->contains(function ($ingredient) {
+        return $ingredient->inventoryHistory->where("type", "out")
+            ->where("reference_type", "order")
+            ->whereNull("stock_report_id")->isNotEmpty();
+    });
 @endphp
 
 @section("content")
@@ -56,7 +62,7 @@
                                         <div class="order-id"><span class="dot"></span>#{{ $ingredient->normalizedId() }}</div>
                                     </td>
                                     <td>{{ $ingredient->name }}</td>
-                                    <td style="text-align: {{ $hasSupply ? 'left' : 'center' }}">
+                                    <td style="text-align: {{ $hasSupply || $hasOutgoingStock ? 'left' : 'center' }}">
                                         {{ $ingredient->inventory->sum("stock") }}
 
                                         @if ($ingredient->supplies->whereNull("stock_report_id")->count() > 0)
@@ -68,6 +74,19 @@
 
                                                 <span class="tooltip-box">
                                                     Added from supplies
+                                                </span>
+                                            </span>
+                                        @endif
+
+                                        @if ($ingredient->outgoingStock > 0)
+                                            <span
+                                                class="th-tooltip supply-tooltip"
+                                                style="color: #de4a4a; cursor: help;"
+                                            >
+                                                (-{{ $ingredient->outgoingStock }})
+
+                                                <span class="tooltip-box">
+                                                    Reduced by outgoing
                                                 </span>
                                             </span>
                                         @endif

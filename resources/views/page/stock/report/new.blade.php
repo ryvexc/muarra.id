@@ -98,11 +98,11 @@
                                                 name="items[{{ $ingredient->id }}][outgoing_stock]"
                                                 placeholder="0"
                                                 min="0"
-                                                value="0"
+                                                value="{{ $ingredient->outgoingStock }}"
                                                 hidden
                                             >
 
-                                            <span id="stockId-{{ $ingredient->id }}-penjualanDisplay">0</span>
+                                            <span id="stockId-{{ $ingredient->id }}-penjualanDisplay">{{ $ingredient->outgoingStock }}</span>
                                         </td>
                                         <td class="editable-cell" style="text-align: center">
                                             <input

@@ -6,6 +6,7 @@ use App\Helpers\JournalHelper;
 use App\Models\Branch;
 use App\Models\Ingredient;
 use App\Models\Inventory;
+use App\Models\InventoryHistory;
 use App\Models\Supply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +28,8 @@ class SupplyController extends Controller
 
     public function post(Request $request)
     {
+        $user = currentUser();
+
         $supply = new Supply;
         $supply->tenant_id = currentUser()->tenant->id;
         $supply->ingredient_id = $request->ingredient_id;
@@ -34,23 +37,30 @@ class SupplyController extends Controller
         $supply->branch_id = $request->branch_id ?? currentUser()->branch->id;
         $supply->save();
 
-        // JournalHelper::event('SUPPLY_RECEIVED', [
-        //     'message' => "#" . $supply->normalizedId() . "\t" . $supply->ingredient->name . "\t" . $supply->quantity
-        // ]);
-
         $inventory = Inventory::firstOrNew([
             'tenant_id' => currentUser()->tenant->id,
             'branch_id' => $request->branch_id ?? currentUser()->branch->id,
             'ingredient_id' => $request->ingredient_id,
         ]);
 
+        $stock_before = $inventory->stock;
         $inventory->stock = ($inventory->stock ?? 0) + $supply->quantity;
 
-        $inventory->save();
+        $history = new InventoryHistory();
+        $history->tenant_id = $user->tenant->id;
+        $history->branch_id = $user->branch->id;
+        $history->ingredient_id = $request->ingredient_id;
+        $history->type = "in";
+        $history->quantity = $request->quantity;
+        $history->stock_before = $stock_before;
+        $history->stock_after = $inventory->stock;
+        $history->reference_type = "supply";
+        $history->reference_id = $supply->id;
+        $history->notes = "Incoming supply #" . $supply->normalizedId();
+        $history->created_by_staff_id = $user->id;
+        $history->save();
 
-        // JournalHelper::event('INGREDIENT_STOCK_UPDATED', [
-        //     'message' => "#" . $ingredient->normalizedId() . "\t" . $ingredient->name . "\t" . $old_ingredient_stock . "+" . $supply->quantity . "\t" . $ingredient->stock
-        // ]);
+        $inventory->save();
 
         return redirect()->back();
     }

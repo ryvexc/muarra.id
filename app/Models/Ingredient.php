@@ -34,9 +34,23 @@ class Ingredient extends Model
         return $this->hasMany(Inventory::class);
     }
 
+    public function inventoryHistory()
+    {
+        return $this->hasMany(InventoryHistory::class);
+    }
+
     public function getSupplyInAttribute(): int
     {
         return $this->supplies()
+            ->whereNull("stock_report_id")
+            ->sum("quantity"); // ganti "quantity" kalau nama kolom qty lu beda
+    }
+
+    public function getOutgoingStockAttribute(): int
+    {
+        return $this->inventoryHistory()
+            ->where("type", "out")
+            ->where("reference_type", "order")
             ->whereNull("stock_report_id")
             ->sum("quantity"); // ganti "quantity" kalau nama kolom qty lu beda
     }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DiscountController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,5 +29,9 @@ Route::prefix("v1")->group(function () {
 
     Route::prefix("subcategories")->group(function () {
         Route::get("/", [CategoryController::class, "indexSubCategory"])->middleware("auth:sanctum");
+    });
+
+    Route::prefix("orders")->group(function () {
+        Route::post("/", [OrderController::class, "post"])->middleware("auth:sanctum");
     });
 });

@@ -5,6 +5,7 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\InventoryHistoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegisteredUserController;
@@ -100,6 +101,10 @@ Route::prefix("/supply")->group(function () {
   Route::get("/", [SupplyController::class, "index"])->name("supply.index");
   Route::post("/", [SupplyController::class, "post"])->name("supply.post");
 })->middleware(Authenticate::class);
+
+Route::prefix("/history")->group(function () {
+  Route::get("/", [InventoryHistoryController::class, "index"])->name("inventory-history.index");
+})->middleware(AnyAuthentication::class);
 
 Route::prefix("/discount")->group(function () {
   Route::get("/", [DiscountController::class, "index"])->name('discount.index');
