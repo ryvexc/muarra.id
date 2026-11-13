@@ -2,21 +2,46 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProductsExport;
 use App\Models\Ingredient;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductIngredient;
 use App\Models\ProductSubCategory;
+use App\Models\Staff;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function filteredOrders(Request $request, Staff | User $user)
     {
-        $products = Product::all()->whereNull("deleted_at");
+        $products = Product::query()->where("tenant_id", $user->tenant->id)->where('deleted_at', NULL);
+        if ($request->filled('branch_id')) $products->where("branch_id", $request->branch_id);
+        if ($request->filled("cashier_id")) $products->where("cashier_id", $request->cashier_id);
+        if ($request->filled("payment_type")) $products->where("payment_type", $request->payment_type);
+        if ($request->filled("category_id")) $products->where("product_category_id", $request->category_id);
+        if ($request->filled("subcategory_id")) $products->where("product_subcategory_id", $request->subcategory_id);
+        if ($request->filled("start_date")) $products->whereDate("created_at", ">=", $request->start_date);
+        if ($request->filled("end_date")) $products->whereDate("created_at", "<=", $request->end_date);
+
+        return $products;
+    }
+
+    public function index(Request $request)
+    {
+        $user = currentUser();
+
+        $products = $this->filteredOrders($request, $user);
+
+        if ($request->filled("per_page"))
+            $products = $products->paginate($request->per_page == "All" ? $products->count() : $request->per_page)->withQueryString();
+        else $products = $products->paginate(10)->withQueryString();
+
         $categories = ProductCategory::all()->whereNull("deleted_at");
         $subcategories = ProductSubCategory::all()->whereNull("deleted_at");
 
@@ -117,5 +142,16 @@ class ProductController extends Controller
         $product->save();
 
         return redirect()->back();
+    }
+
+    public function export(Request $request)
+    {
+        $user = currentUser();
+        $products = $this->filteredOrders($request, $user);
+
+        return Excel::download(
+            new ProductsExport($products),
+            'products-' . now()->format('Y-m-d-His') . '.xlsx'
+        );
     }
 }

@@ -16,6 +16,69 @@
             @endif
         </div>
         <div>
+            <div style="display: flex; justify-content: space-between; width: 100%">
+                <div style="display: inline-flex; gap:16px; margin-bottom: 20px;">
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>Per Page</label>
+                        <select name="per_page" required
+                            onchange="filter(this)"
+                        >
+                            @foreach ([10, 25, 50, 100, "All"] as $per_page_value)
+                                <option value="{{ $per_page_value }}" @selected(request('per_page') == $per_page_value)>{{ $per_page_value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label style="white-space: nowrap">Category</label>
+                        <select name="category_id" required
+                            onchange="filter(this)"
+                        >
+                            <option value="" selected>All</option>
+
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}" @selected(request('category_id') == $category->id)>{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label style="white-space: nowrap">Subcategory</label>
+                        <select name="subcategory_id" required
+                            onchange="filter(this)"
+                        >
+                            <option value="" selected>All</option>
+
+                            @foreach ($subcategories as $subcategory)
+                                <option value="{{ $subcategory->id }}" @selected(request('subcategory_id') == $subcategory->id)>{{ $subcategory->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: inline-flex; gap: 20px;">
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>From</label>
+                        <input
+                            type="date"
+                            name="start_date"
+                            value="{{ request('start_date') }}"
+                            onchange="filter(this)"
+                        >
+                    </div>
+
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>To</label>
+                        <input
+                            type="date"
+                            name="end_date"
+                            value="{{ request('end_date') }}"
+                            onchange="filter(this)"
+                        >
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <div class="toolbar">
                     <div class="search">
@@ -27,7 +90,9 @@
                     </div>
                     
                     <div class="toolbar-right">
-                        <button class="btn">Export</button>
+                        <button class="btn-success" onclick="window.location.href = '{{ route('product.export', request()->query()) }}'">
+                            <i class="fa-solid fa-file-excel"></i>
+                        </button>
                     </div>
                 </div>
                 
@@ -79,12 +144,7 @@
                 </div>
                 
                 <div class="footer">
-                    <span>Showing 3 dari 128</span>
-                    <div class="pagination">
-                        <button class="active">1</button>
-                        <button>2</button>
-                        <button>3</button>
-                    </div>
+                    {{ $products->links() }}
                 </div>
             </div>
         </div>

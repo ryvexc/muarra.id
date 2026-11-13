@@ -7,11 +7,6 @@
                 <h1>Orders</h1>
                 <p>Manage all orders in one place.</p>
             </div>
-            
-            {{-- <button class="btn-primary">
-                <i class="fa-solid fa-plus"></i>
-                New Order
-            </button> --}}
         </div>
         <div>
             <div style="display: flex; justify-content: space-between; width: 100%">

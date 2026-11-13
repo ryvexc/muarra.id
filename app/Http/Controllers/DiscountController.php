@@ -10,7 +10,9 @@ class DiscountController extends Controller
 {
     public function index(Request $request)
     {
-        $discounts = Discount::all()->whereNull("deleted_at");
+        $user = currentUser();
+
+        $discounts = Discount::query()->where("tenant_id", $user->tenant->id)->where("deleted_at", NULL)->paginate(10)->withQueryString();
 
         return view("page.discount.index", [
             "discounts" => $discounts

@@ -16,6 +16,56 @@
             @endif
         </div>
         <div>
+            <div style="display: flex; justify-content: space-between; width: 100%">
+                <div style="display: inline-flex; gap:16px; margin-bottom: 20px;">
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>Per Page</label>
+                        <select name="per_page" required
+                            onchange="filter(this)"
+                        >
+                            @foreach ([10, 25, 50, 100, "All"] as $per_page_value)
+                                <option value="{{ $per_page_value }}" @selected(request('per_page') == $per_page_value)>{{ $per_page_value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label style="white-space: nowrap">Assigned In</label>
+                        <select name="assigned_in" required
+                            onchange="filter(this)"
+                        >
+                            <option value="" selected>All</option>
+
+                            @foreach ($branches as $branch)
+                                <option value="{{ $branch->id }}" @selected(request('assigned_in') == $branch->id)>{{ $branch->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: inline-flex; gap: 20px;">
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>From</label>
+                        <input
+                            type="date"
+                            name="start_date"
+                            value="{{ request('start_date') }}"
+                            onchange="filter(this)"
+                        >
+                    </div>
+
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>To</label>
+                        <input
+                            type="date"
+                            name="end_date"
+                            value="{{ request('end_date') }}"
+                            onchange="filter(this)"
+                        >
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <div class="toolbar">
                     <div class="search">
@@ -27,7 +77,9 @@
                     </div>
                     
                     <div class="toolbar-right">
-                        <button class="btn">Export</button>
+                        <button class="btn-success" onclick="window.location.href = '{{ route('staff.export', request()->query()) }}'">
+                            <i class="fa-solid fa-file-excel"></i>
+                        </button>
                     </div>
                 </div>
                 

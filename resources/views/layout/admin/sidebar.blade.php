@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <nav>
+    <nav id="sidebar-menu">
         @if(currentUser()->role_id == 2)
             {{-- Main Menu --}}
             <div class="menu-group">

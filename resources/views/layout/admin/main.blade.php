@@ -80,6 +80,24 @@
                     overlay.classList.remove("active");
                 }
             });
+
+            const sidebarMenu = document.getElementById('sidebar-menu');
+
+            if (sidebarMenu) {
+                const storageKey = 'sidebar-menu-scroll';
+
+                sidebarMenu.addEventListener('scroll', () => {
+                    sessionStorage.setItem(storageKey, sidebarMenu.scrollTop);
+                });
+
+                window.addEventListener('load', () => {
+                    const savedPosition = sessionStorage.getItem(storageKey);
+
+                    if (savedPosition !== null) {
+                        sidebarMenu.scrollTop = Number(savedPosition);
+                    }
+                });
+            }
         </script>
 
         <script>
@@ -101,7 +119,7 @@
             }
         </script>
 
-        <script>
+        {{-- <script>
             const searchInput = document.getElementById('querySearch');
             const suggestions = document.getElementById('searchSuggestions');
             const preview = document.getElementById('searchPreview');
@@ -279,7 +297,7 @@
                     suggestions.classList.remove('show');
                 }, 150);
             });
-        </script>
+        </script> --}}
 
         @yield("script")
     </body>

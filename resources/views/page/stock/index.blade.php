@@ -26,16 +26,53 @@
             </button>
         </div>
         <div>
-            <div style="display: inline-flex">
-                <div class="form-group " style="width: 100%">
-                    <label>Branch</label>
-                    <select name="unit_of_measurement_id" required>
-                        <option value="" selected disabled>All</option>
+            <div style="display: flex; justify-content: space-between; width: 100%">
+                <div style="display: inline-flex; gap:16px; margin-bottom: 20px;">
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>Per Page</label>
+                        <select name="per_page" required
+                            onchange="filter(this)"
+                        >
+                            @foreach ([10, 25, 50, 100, "All"] as $per_page_value)
+                                <option value="{{ $per_page_value }}" @selected(request('per_page') == $per_page_value)>{{ $per_page_value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                        @foreach ($branches as $branch)
-                            <option value="{{ $branch->id }}">{{ $branch->name }}</option>
-                        @endforeach
-                    </select>
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>Branch</label>
+                        <select name="branch_id" required
+                            onchange="filter(this)"
+                        >
+                            <option value="" selected>All</option>
+
+                            @foreach ($branches as $branch)
+                                <option value="{{ $branch->id }}" @selected(request('branch_id') == $branch->id)>{{ $branch->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: inline-flex; gap: 20px;">
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>From</label>
+                        <input
+                            type="date"
+                            name="start_date"
+                            value="{{ request('start_date') }}"
+                            onchange="filter(this)"
+                        >
+                    </div>
+
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>To</label>
+                        <input
+                            type="date"
+                            name="end_date"
+                            value="{{ request('end_date') }}"
+                            onchange="filter(this)"
+                        >
+                    </div>
                 </div>
             </div>
 
@@ -50,7 +87,9 @@
                     </div>
                     
                     <div class="toolbar-right">
-                        <button class="btn">Export</button>
+                        <button class="btn-success" onclick="window.location.href = '{{ route('stock.export', request()->query()) }}'">
+                            <i class="fa-solid fa-file-excel"></i>
+                        </button>
                     </div>
                 </div>
                 
@@ -69,7 +108,61 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($ingredients as $ingredient)
+                            @if (request("branch_id")) @forelse($inventories as $inventory)
+                                <tr>
+                                    <td>
+                                        <div class="order-id"><span class="dot"></span>#{{ $inventory->ingredient->normalizedId() }}</div>
+                                    </td>
+                                    <td>{{ $inventory->ingredient->name }}</td>
+                                    <td>
+                                        {{ $inventory->stock }}
+
+                                        @if ($inventory->supply_in > 0)
+                                            <span
+                                                class="th-tooltip supply-tooltip"
+                                                style="color: #4ade80; cursor: help;"
+                                            >
+                                                (+{{ $inventory->supply_in }})
+
+                                                <span class="tooltip-box">
+                                                    Added from supplies
+                                                </span>
+                                            </span>
+                                        @endif
+
+                                        @if ($inventory->outgoingStock > 0)
+                                            <span
+                                                class="th-tooltip supply-tooltip"
+                                                style="color: #de4a4a; cursor: help;"
+                                            >
+                                                (-{{ $inventory->outgoingStock }})
+
+                                                <span class="tooltip-box">
+                                                    Reduced by outgoing
+                                                </span>
+                                            </span>
+                                        @endif
+                                    </td>
+
+                                    <td>{{ $inventory->ingredient->unit_of_measurement->symbol }}</td>
+                                    <td>{{ App\Support\Currency::format("IDR", $inventory->ingredient->harga_satuan) }}/{{ $inventory->ingredient->unit_of_measurement->symbol }}</td>
+                                    <td class="date-cell" style="text-align: right">{{ $inventory->ingredient->updated_at }}</td>
+                                    <td class="date-cell" style="text-align: right">{{ $inventory->ingredient->created_at }}</td>
+                                    <td class="actions">
+                                        <button class="icon-btn edit open-modal" title="Edit" data-modal="editModal-{{ $inventory->ingredient->id }}">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </button>
+
+                                        <button class="icon-btn delete open-modal" title="Delete" data-modal="deleteModal-{{ $inventory->ingredient->id }}">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colSpan="9999" class="date-cell" style="text-align: center">No data.</td>
+                                </tr>
+                            @endforelse @else @forelse($ingredients as $ingredient)
                                 <tr>
                                     <td>
                                         <div class="order-id"><span class="dot"></span>#{{ $ingredient->normalizedId() }}</div>
@@ -122,18 +215,13 @@
                                 <tr>
                                     <td colSpan="9999" class="date-cell" style="text-align: center">No data.</td>
                                 </tr>
-                            @endforelse
+                            @endforelse @endif
                         </tbody>
                     </table>
                 </div>
                 
                 <div class="footer">
-                    <span>Showing 3 dari 128</span>
-                    <div class="pagination">
-                        <button class="active">1</button>
-                        <button>2</button>
-                        <button>3</button>
-                    </div>
+                    {{ $inventories->links() }}
                 </div>
             </div>
         </div>

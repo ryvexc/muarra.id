@@ -27,7 +27,7 @@
                     </div>
                     
                     <div class="toolbar-right">
-                        <button class="btn">Export</button>
+
                     </div>
                 </div>
                 
@@ -40,7 +40,7 @@
                                 <th style="width: 0;">SUBCATEGORIES</th>
                                 <th>JML. PRODUK</th>
                                 <th style="width: 0;">UPDATED AT</th>
-                                <th style="width: 0">CREATED_AT</th>
+                                <th style="width: 0">CREATED AT</th>
                                 <th style="text-align: right; width: 0">ACTIONS</th>
                             </tr>
                         </thead>
@@ -85,12 +85,7 @@
                 </div>
                 
                 <div class="footer">
-                    <span>Showing 3 dari 128</span>
-                    <div class="pagination">
-                        <button class="active">1</button>
-                        <button>2</button>
-                        <button>3</button>
-                    </div>
+                    {{ $categories->links() }}
                 </div>
             </div>
         </div>
@@ -120,7 +115,7 @@
                     </div>
                     
                     <div class="toolbar-right">
-                        <button class="btn">Export</button>
+
                     </div>
                 </div>
                 
@@ -128,11 +123,11 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 0;">CATEGORY ID</th>
+                                <th style="width: 0;">SUBCATEGORY ID</th>
                                 <th style="width: 0;">NAME</th>
                                 <th>JML. PRODUK</th>
                                 <th style="width: 0;">UPDATED AT</th>
-                                <th style="width: 0">CREATED_AT</th>
+                                <th style="width: 0">CREATED AT</th>
                                 <th style="text-align: right; width: 0">ACTIONS</th>
                             </tr>
                         </thead>
@@ -166,12 +161,7 @@
                 </div>
                 
                 <div class="footer">
-                    <span>Showing 3 dari 128</span>
-                    <div class="pagination">
-                        <button class="active">1</button>
-                        <button>2</button>
-                        <button>3</button>
-                    </div>
+                    {{ $subCategories->links() }}
                 </div>
             </div>
         </div>

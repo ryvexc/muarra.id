@@ -12,8 +12,10 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = ProductCategory::all()->whereNull("deleted_at");
-        $subCategories = ProductSubCategory::all()->whereNull("deleted_at");
+        $user = currentUser();
+
+        $categories = ProductCategory::query()->where("tenant_id", $user->tenant->id)->where("deleted_at", NULL)->paginate(10)->withQueryString();
+        $subCategories = ProductSubCategory::query()->where("tenant_id", $user->tenant->id)->where("deleted_at", NULL)->paginate(10)->withQueryString();
 
         return view("page.category.index", [
             "subCategories" => $subCategories,

@@ -78,7 +78,7 @@ class OrderController extends Controller
                 $history->branch_id = $user->branch->id;
                 $history->ingredient_id = $product_ingredient->id;
                 $history->type = "out";
-                $history->quantity = $quantity;
+                $history->quantity = -$quantity;
                 $history->stock_before = $stock_before;
                 $history->stock_after = $inventory->stock;
                 $history->reference_type = "order";

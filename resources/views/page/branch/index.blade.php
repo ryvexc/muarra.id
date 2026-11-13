@@ -14,17 +14,39 @@
             </button>
         </div>
         <div>
-            <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 20px;">
-                <div style="display: inline-flex; gap:16px">
-                    <span></span>
+            <div style="display: flex; justify-content: space-between; width: 100%">
+                <div style="display: inline-flex; gap:16px; margin-bottom: 20px;">
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>Per Page</label>
+                        <select name="per_page" required
+                            onchange="filter(this)"
+                        >
+                            @foreach ([10, 25, 50, 100, "All"] as $per_page_value)
+                                <option value="{{ $per_page_value }}" @selected(request('per_page') == $per_page_value)>{{ $per_page_value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
-                <div style="display: inline-flex">
+                <div style="display: inline-flex; gap: 20px;">
                     <div class="form-group form-group-compact" style="width: 100%">
-                        <label style="text-align: right">Export</label>
-                        <button class="btn-success">
-                            <i class="fa-solid fa-file-excel"></i>
-                        </button>
+                        <label>From</label>
+                        <input
+                            type="date"
+                            name="start_date"
+                            value="{{ request('start_date') }}"
+                            onchange="filter(this)"
+                        >
+                    </div>
+
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>To</label>
+                        <input
+                            type="date"
+                            name="end_date"
+                            value="{{ request('end_date') }}"
+                            onchange="filter(this)"
+                        >
                     </div>
                 </div>
             </div>
@@ -40,7 +62,9 @@
                     </div>
                     
                     <div class="toolbar-right">
-                        <button class="btn">Export</button>
+                        <button class="btn-success" onclick="window.location.href = '{{ route('branch.export', request()->query()) }}'">
+                            <i class="fa-solid fa-file-excel"></i>
+                        </button>
                     </div>
                 </div>
                 
@@ -48,7 +72,7 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 0;">STAFF ID</th>
+                                <th style="width: 0;">BRANCH ID</th>
                                 <th style="width: 0;">NAME</th>
                                 <th style="width: 0;">MANAGER</th>
                                 <th>ADDRESS</th>
@@ -97,12 +121,7 @@
                 </div>
                 
                 <div class="footer">
-                    <span>Showing 3 dari 128</span>
-                    <div class="pagination">
-                        <button class="active">1</button>
-                        <button>2</button>
-                        <button>3</button>
-                    </div>
+                    {{ $branches->links() }}
                 </div>
             </div>
         </div>
@@ -227,7 +246,7 @@
                                 <i class="fa-solid fa-box"></i>
                             </div>
                             <div>
-                                <h2>Delete Tenant</h2>
+                                <h2>Delete Branch</h2>
                                 <p>Delete #{{ $branch->normalizedId() }}.</p>
                             </div>
                         </div>
@@ -237,12 +256,12 @@
                         </button>
                     </div>
 
-                    <form method="POST" action="{{ route('tenant.delete', ['id' => $branch->id]) }}">
+                    <form method="POST" action="{{ route('branch.delete', ['id' => $branch->id]) }}">
                         @csrf
                         @method("DELETE")
 
                         <div style="padding: 16px">
-                            <p style="margin-bottom: 12px">Are you sure you wanna delete this Tenant?</p>
+                            <p style="margin-bottom: 12px">Are you sure you wanna delete this Branch?</p>
     
                             <ul class="info-list">
                                 <li>

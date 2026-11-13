@@ -7,17 +7,37 @@ use App\Models\Branch;
 use App\Models\Ingredient;
 use App\Models\Inventory;
 use App\Models\InventoryHistory;
+use App\Models\Staff;
 use App\Models\Supply;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class SupplyController extends Controller
 {
-    public function index()
+    public function filteredOrders(Request $request, Staff | User $user)
     {
-        $supplies = Supply::all()->whereNull("stock_report_id");
-        $ingredients = Ingredient::all()->whereNull("deleted_at");
-        $branches = Branch::all();
+        $supplies = Supply::query()->where("tenant_id", $user->tenant->id)->where("stock_report_id", NULL);
+        if ($request->filled('branch_id')) $supplies->where("branch_id", $request->branch_id);
+        if ($request->filled("cashier_id")) $supplies->where("cashier_id", $request->cashier_id);
+        if ($request->filled("payment_type")) $supplies->where("payment_type", $request->payment_type);
+        if ($request->filled("start_date")) $supplies->whereDate("created_at", ">=", $request->start_date);
+        if ($request->filled("end_date")) $supplies->whereDate("created_at", "<=", $request->end_date);
+
+        return $supplies;
+    }
+
+    public function index(Request $request)
+    {
+        $user = currentUser();
+
+        $supplies = $this->filteredOrders($request, $user);
+        if ($request->filled("per_page"))
+            $supplies = $supplies->paginate($request->per_page == "All" ? $supplies->count() : $request->per_page)->withQueryString();
+        else $supplies = $supplies->paginate(10)->withQueryString();
+
+        $ingredients = Ingredient::all()->where("tenant_id")->whereNull("deleted_at");
+        $branches = Branch::all()->where("tenant_id", $user->tenant->id);
 
         return view("page.supply.index", [
             "supplies" => $supplies,
@@ -48,7 +68,7 @@ class SupplyController extends Controller
 
         $history = new InventoryHistory();
         $history->tenant_id = $user->tenant->id;
-        $history->branch_id = $user->branch->id;
+        $history->branch_id = $request->branch_id ?? currentUser()->branch->id;
         $history->ingredient_id = $request->ingredient_id;
         $history->type = "in";
         $history->quantity = $request->quantity;
@@ -57,7 +77,8 @@ class SupplyController extends Controller
         $history->reference_type = "supply";
         $history->reference_id = $supply->id;
         $history->notes = "Incoming supply #" . $supply->normalizedId();
-        $history->created_by_staff_id = $user->id;
+        if ($user instanceof User) $history->created_by_user_id = $user->id;
+        else $history->created_by_staff_id = $user->id;
         $history->save();
 
         $inventory->save();

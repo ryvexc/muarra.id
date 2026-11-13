@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BranchesExport;
 use App\Models\Branch;
 use App\Models\Ingredient;
 use App\Models\Inventory;
@@ -10,13 +11,33 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BranchController extends Controller
 {
+    public function filteredOrders(Request $request, Staff | User $user)
+    {
+        $branches = Branch::query()->where("tenant_id", $user->tenant->id)->where('deleted_at', NULL);
+        if ($request->filled('branch_id')) $branches->where("branch_id", $request->branch_id);
+        if ($request->filled("cashier_id")) $branches->where("cashier_id", $request->cashier_id);
+        if ($request->filled("payment_type")) $branches->where("payment_type", $request->payment_type);
+        if ($request->filled("start_date")) $branches->whereDate("created_at", ">=", $request->start_date);
+        if ($request->filled("end_date")) $branches->whereDate("created_at", "<=", $request->end_date);
+
+        return $branches;
+    }
+
     public function index(Request $request)
     {
-        $branches = Branch::all()->whereNull("deleted_at");
-        $managers = Staff::all()->where("role_id", 3)->whereNull("deleted_at");
+        $user = currentUser();
+
+        $branches = $this->filteredOrders($request, $user);
+
+        if ($request->filled("per_page"))
+            $branches = $branches->paginate($request->per_page == "All" ? $branches->count() : $request->per_page)->withQueryString();
+        else $branches = $branches->paginate(10)->withQueryString();
+
+        $managers = Staff::all()->where("tenant_id", $user->tenant->id)->where("role_id", 3)->whereNull("deleted_at");
 
         return view("page.branch.index", [
             "branches" => $branches,
@@ -89,5 +110,16 @@ class BranchController extends Controller
         $branch->save();
 
         return redirect()->back();
+    }
+
+    public function export(Request $request)
+    {
+        $user = currentUser();
+        $orders = $this->filteredOrders($request, $user);
+
+        return Excel::download(
+            new BranchesExport($orders),
+            'branches-' . now()->format('Y-m-d-His') . '.xlsx'
+        );
     }
 }

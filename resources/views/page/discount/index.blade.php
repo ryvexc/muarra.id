@@ -31,7 +31,7 @@
                     </div>
                     
                     <div class="toolbar-right">
-                        <button class="btn">Export</button>
+
                     </div>
                 </div>
                 
@@ -124,12 +124,7 @@
                 </div>
                 
                 <div class="footer">
-                    <span>Showing 3 dari 128</span>
-                    <div class="pagination">
-                        <button class="active">1</button>
-                        <button>2</button>
-                        <button>3</button>
-                    </div>
+                    {{ $discounts->links() }}
                 </div>
             </div>
         </div>

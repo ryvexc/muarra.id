@@ -4,11 +4,87 @@
     <section>
         <div class="page-header">
             <div>
-                <h1>Incoming Supplies</h1>
-                <p>Manage your ingredients/stocks.</p>
+                <h1>Inventory Histories</h1>
+                <p>All inventory movements are logged here.</p>
             </div>
         </div>
         <div>
+            <div style="display: flex; justify-content: space-between; width: 100%">
+                <div style="display: inline-flex; gap:16px; margin-bottom: 20px;">
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>Per Page</label>
+                        <select name="per_page" required
+                            onchange="filter(this)"
+                        >
+                            @foreach ([10, 25, 50, 100, "All"] as $per_page_value)
+                                <option value="{{ $per_page_value }}" @selected(request('per_page') == $per_page_value)>{{ $per_page_value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>Branch</label>
+                        <select name="branch_id" required
+                            onchange="filter(this)"
+                        >
+                            <option value="" selected>All</option>
+
+                            @foreach ($branches as $branch)
+                                <option value="{{ $branch->id }}" @selected(request('branch_id') == $branch->id)>{{ $branch->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>Item</label>
+                        <select name="ingredient_id" required
+                            onchange="filter(this)"
+                        >
+                            <option value="" selected>All</option>
+
+                            @foreach ($ingredients as $item)
+                                <option value="{{ $item->id }}" @selected(request('ingredient_id') == $item->id)>{{ $item->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>Item</label>
+                        <select name="type" required
+                            onchange="filter(this)"
+                        >
+                            <option value="" selected>All</option>
+
+                            @foreach (["out", "in", "adjustment"] as $type)
+                                <option value="{{ $type }}" @selected(request('type') == $type)>{{ $type }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: inline-flex; gap: 20px;">
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>From</label>
+                        <input
+                            type="date"
+                            name="start_date"
+                            value="{{ request('start_date') }}"
+                            onchange="filter(this)"
+                        >
+                    </div>
+
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>To</label>
+                        <input
+                            type="date"
+                            name="end_date"
+                            value="{{ request('end_date') }}"
+                            onchange="filter(this)"
+                        >
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <div class="toolbar">
                     <div class="search">
@@ -20,7 +96,9 @@
                     </div>
                     
                     <div class="toolbar-right">
-                        <button class="btn">Export</button>
+                        <button class="btn-success" onclick="window.location.href = '{{ route('inventory-history.export', request()->query()) }}'">
+                            <i class="fa-solid fa-file-excel"></i>
+                        </button>
                     </div>
                 </div>
                 
@@ -38,7 +116,7 @@
                                 <th style="width: 0;">S. AFTER</th>
                                 <th style="width: 0;">REF. - ID</th>
                                 <th style="width: 0;">CREATED BY</th>
-                                <th>NOTES</th>
+                                <th>DESCRIPTION</th>
                                 <th style="width: 0; text-align: right">CREATED AT</th>
                             </tr>
                         </thead>
@@ -68,7 +146,11 @@
                                     <td style="text-align: center">{{ $inventory_history->stock_before }}</td>
                                     <td style="text-align: center">{{ $inventory_history->stock_after }}</td>
                                     <td>{{ $inventory_history->reference_type }} - {{ $inventory_history->reference_id }}</td>
-                                    <td>{{ $inventory_history->createdByStaff->name }}</td>
+                                    @if($inventory_history->createdByStaff)
+                                        <td>{{ $inventory_history->createdByStaff->name }}</td>
+                                    @else
+                                        <td>{{ $inventory_history->createdByUser->name }}</td>
+                                    @endif
                                     <td>{{ $inventory_history->notes }}</td>
                                     <td class="date-cell" style="text-align: right">{{ $inventory_history->created_at }}</td>
                                 </tr>
@@ -82,12 +164,7 @@
                 </div>
                 
                 <div class="footer">
-                    <span>Showing 3 dari 128</span>
-                    <div class="pagination">
-                        <button class="active">1</button>
-                        <button>2</button>
-                        <button>3</button>
-                    </div>
+                    {{ $inventory_histories->links() }}
                 </div>
             </div>
         </div>

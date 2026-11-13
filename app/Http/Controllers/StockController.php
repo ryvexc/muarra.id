@@ -2,18 +2,35 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\StocksExport;
 use App\Helpers\JournalHelper;
 use App\Models\Branch;
 use App\Models\Ingredient;
 use App\Models\Inventory;
+use App\Models\Staff;
 use App\Models\Unit;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StockController extends Controller
 {
-    public function index()
+    public function filteredOrders(Request $request, Staff | User $user)
+    {
+        $inventories = Inventory::query()->where("tenant_id", $user->tenant->id);
+        if ($request->filled('branch_id')) $inventories->where("branch_id", $request->branch_id);
+        if ($request->filled("cashier_id")) $inventories->where("cashier_id", $request->cashier_id);
+        if ($request->filled("payment_type")) $inventories->where("payment_type", $request->payment_type);
+        if ($request->filled("assigned_in")) $inventories->where("branch_id", $request->assigned_in);
+        if ($request->filled("start_date")) $inventories->whereDate("created_at", ">=", $request->start_date);
+        if ($request->filled("end_date")) $inventories->whereDate("created_at", "<=", $request->end_date);
+
+        return $inventories;
+    }
+
+    public function index(Request $request)
     {
         $user = currentUser();
 
@@ -21,7 +38,11 @@ class StockController extends Controller
         $units = Unit::all();
         $branches = Branch::all()->where("tenant_id", $user->tenant->id);
 
-        $inventories = Inventory::all()->where("tenant_id", $user->tenant->id);
+        $inventories = $this->filteredOrders($request, $user);
+
+        if ($request->filled("per_page"))
+            $inventories = $inventories->paginate($request->per_page == "All" ? $inventories->count() : $request->per_page)->withQueryString();
+        else $inventories = $inventories->paginate(10)->withQueryString();
 
         return view("page.stock.index", [
             "ingredients" => $ingredients,
@@ -75,5 +96,15 @@ class StockController extends Controller
         $ingredient->save();
 
         return redirect()->back();
+    }
+
+    public function export(Request $request)
+    {
+        $user = currentUser();
+
+        return Excel::download(
+            new StocksExport($user->tenant->id),
+            'stocks-' . now()->format('Y-m-d-His') . '.xlsx'
+        );
     }
 }

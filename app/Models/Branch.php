@@ -16,4 +16,9 @@ class Branch extends Model
     {
         return $this->belongsTo(Staff::class, "manager_id", "id");
     }
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
 }
