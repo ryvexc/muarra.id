@@ -12,7 +12,7 @@
             <div style="display: flex; justify-content: space-between; width: 100%">
                 <div style="display: inline-flex; gap:16px; margin-bottom: 20px;">
                     <div class="form-group form-group-compact" style="width: 100%">
-                        <label>Per Page</label>
+                        <label style="white-space: nowrap">Per Page</label>
                         <select name="per_page" required
                             onchange="filter(this)"
                         >
@@ -23,7 +23,7 @@
                     </div>
 
                     <div class="form-group form-group-compact" style="width: 100%">
-                        <label>Branch</label>
+                        <label style="white-space: nowrap">Branch</label>
                         <select name="branch_id" required
                             onchange="filter(this)"
                         >
@@ -36,7 +36,7 @@
                     </div>
 
                     <div class="form-group form-group-compact" style="width: 100%">
-                        <label>Cashier</label>
+                        <label style="white-space: nowrap">Cashier</label>
                         <select name="cashier_id" required
                             onchange="filter(this)"
                         >
@@ -49,7 +49,7 @@
                     </div>
 
                     <div class="form-group form-group-compact" style="width: 100%">
-                        <label>Payment Type</label>
+                        <label style="white-space: nowrap">Payment Type</label>
                         <select name="payment_type" required
                             onchange="filter(this)"
                         >

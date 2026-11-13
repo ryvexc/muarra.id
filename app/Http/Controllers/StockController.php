@@ -91,7 +91,13 @@ class StockController extends Controller
 
     public function delete(Request $request, string $id)
     {
+        $user = currentUser();
+
         $ingredient = Ingredient::find($id);
+
+        if ($ingredient)
+            Inventory::where('tenant_id', $user->tenant->id)->where("ingredient_id", $ingredient->id)->delete();
+
         $ingredient->deleted_at = Carbon::now();
         $ingredient->save();
 

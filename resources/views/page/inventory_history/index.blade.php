@@ -128,7 +128,12 @@
                                     </td>
                                     <td>{{ $inventory_history->branch->name }}</td>
                                     <td>{{ $inventory_history->ingredient->normalizedId() }}</td>
-                                    <td>{{ $inventory_history->ingredient->name }}</td>
+                                    <td>
+                                        {{ $inventory_history->ingredient->name }}
+                                        @if ($inventory_history->ingredient->deleted_at)
+                                            <span style="color:#f87171">(DELETED)</span>
+                                        @endif
+                                    </td>
 
                                     <td>
                                         @if ($inventory_history->type === 'out')

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId("tenant_id")->nullable()->references("id")->on("tenants")->onDelete("SET NULL");
             $table->foreignId("ingredient_id")->nullable()->references("id")->on("ingredients")->onDelete("SET NULL");
             $table->integer("stock");
+            $table->timestamp("deleted_at")->nullable();
             $table->timestamps();
         });
     }

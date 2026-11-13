@@ -66,7 +66,7 @@ class OrderController extends Controller
             $product = Product::find($orderItemRequest["product"]->id);
 
             foreach ($product->ingredients as $product_ingredient) {
-                $inventory = Inventory::where("branch_id", $user->branch->id)->where("tenant_id", $user->tenant->id)->where("ingredient_id", $product_ingredient->id)->first();
+                $inventory = Inventory::where("branch_id", $user->branch->id)->where("tenant_id", $user->tenant->id)->where("ingredient_id", $product_ingredient->ingredient_id)->first();
                 $stock_before = $inventory->stock;
                 $quantity = $product_ingredient->quantity * $orderItemRequest["quantity"];
 

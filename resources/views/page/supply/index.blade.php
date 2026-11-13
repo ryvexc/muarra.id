@@ -99,7 +99,12 @@
                                         <div class="order-id"><span class="dot"></span>#{{ $supply->normalizedId() }}</div>
                                     </td>
                                     <td>#{{ $supply->ingredient->normalizedId() }}</td>
-                                    <td>{{ $supply->ingredient->name }}</td>
+                                    <td>
+                                        {{ $supply->ingredient->name }}
+                                        @if ($supply->ingredient->deleted_at)
+                                            <span style="color:#f87171">(DELETED)</span>
+                                        @endif
+                                    </td>
                                     <td style="text-align: right">{{ $supply->quantity }}</td>
                                     <td>{{ $supply->ingredient->unit_of_measurement->symbol }}</td>
                                     <td>{{ $supply->branch->name }}</td>
