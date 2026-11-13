@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Tenant;
 use App\Models\User;
+use App\Models\Wallet;
+use Illuminate\Support\Str;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -32,5 +34,19 @@ class UserSeeder extends Seeder
         $tenant->name = "Apple Inc.";
         $tenant->user_id = $user2->id;
         $tenant->save();
+
+        $cashWallet = new Wallet();
+        $cashWallet->uuid = Str::uuid();
+        $cashWallet->type = "cash";
+        $cashWallet->tenant_id = $user->tenant->id;
+        $cashWallet->balance = 0;
+        $cashWallet->save();
+
+        $cashlessWallet = new Wallet();
+        $cashlessWallet->uuid = Str::uuid();
+        $cashlessWallet->type = "cash";
+        $cashlessWallet->tenant_id = $user->tenant->id;
+        $cashlessWallet->balance = 0;
+        $cashlessWallet->save();
     }
 }

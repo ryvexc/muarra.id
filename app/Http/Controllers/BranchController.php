@@ -8,7 +8,9 @@ use App\Models\Ingredient;
 use App\Models\Inventory;
 use App\Models\Staff;
 use App\Models\User;
+use App\Models\Wallet;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -47,6 +49,8 @@ class BranchController extends Controller
 
     public function post(Request $request)
     {
+        $user = currentUser();
+
         $branch = new Branch();
         $branch->tenant_id = Auth::user()->tenant->id;
         $branch->manager_id = $request->manager_id ?? NULL;
@@ -64,6 +68,22 @@ class BranchController extends Controller
             $inventory->stock = 0;
             $inventory->save();
         }
+
+        $cashWallet = new Wallet();
+        $cashWallet->uuid = Str::uuid();
+        $cashWallet->type = "cash";
+        $cashWallet->tenant_id = $user->tenant->id;
+        $cashWallet->branch_id = $branch->id;
+        $cashWallet->balance = 0;
+        $cashWallet->save();
+
+        $cashlessWallet = new Wallet();
+        $cashlessWallet->uuid = Str::uuid();
+        $cashlessWallet->type = "cashless";
+        $cashlessWallet->tenant_id = $user->tenant->id;
+        $cashlessWallet->branch_id = $branch->id;
+        $cashlessWallet->balance = 0;
+        $cashlessWallet->save();
 
         if ($request->manager_id) {
             $manager = Staff::all()->where("role_id", 3)->where("id", $request->manager_id)->first();
@@ -108,6 +128,11 @@ class BranchController extends Controller
         $branch = Branch::find($id);
         $branch->deleted_at = Carbon::now();
         $branch->save();
+
+        if ($branch)
+            Staff::where("branch_id", $branch->id)->update([
+                "branch_id" => NULL
+            ]);
 
         return redirect()->back();
     }
