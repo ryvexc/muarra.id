@@ -7,7 +7,7 @@
   
   <!-- Asset bawaan Laravel -->
   <link rel="stylesheet" href="{{ asset('assets/css/muarra-dark.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/core.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/css/core.css') }}?v={{ filemtime(public_path('assets/css/core.css')) }}">
   
   <!-- Font Awesome & Google Fonts -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
