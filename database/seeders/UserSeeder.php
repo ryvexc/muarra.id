@@ -38,14 +38,14 @@ class UserSeeder extends Seeder
         $cashWallet = new Wallet();
         $cashWallet->uuid = Str::uuid();
         $cashWallet->type = "cash";
-        $cashWallet->tenant_id = $user->tenant->id;
+        $cashWallet->tenant_id = $user2->tenant->id;
         $cashWallet->balance = 0;
         $cashWallet->save();
 
         $cashlessWallet = new Wallet();
         $cashlessWallet->uuid = Str::uuid();
         $cashlessWallet->type = "cash";
-        $cashlessWallet->tenant_id = $user->tenant->id;
+        $cashlessWallet->tenant_id = $user2->tenant->id;
         $cashlessWallet->balance = 0;
         $cashlessWallet->save();
     }
