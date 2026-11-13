@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Tenant;
 use App\Models\User;
+use App\Models\Wallet;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class TenantController extends Controller
@@ -26,6 +28,20 @@ class TenantController extends Controller
         $tenant->name = $request->name;
         $tenant->user_id = $request->user_id;
         $tenant->save();
+
+        $cashWallet = new Wallet();
+        $cashWallet->uuid = Str::uuid();
+        $cashWallet->type = "cash";
+        $cashWallet->tenant_id = $tenant->id;
+        $cashWallet->balance = 0;
+        $cashWallet->save();
+
+        $cashlessWallet = new Wallet();
+        $cashlessWallet->uuid = Str::uuid();
+        $cashlessWallet->type = "cashless";
+        $cashlessWallet->tenant_id = $tenant->id;
+        $cashlessWallet->balance = 0;
+        $cashlessWallet->save();
 
         return redirect()->back();
     }
