@@ -129,7 +129,14 @@
                     href="{{ route('wallet.main.index') }}">
 
                     <i class="fa-solid fa-wallet"></i>
-                    <span>Wallets</span>
+                    <span>Wallet</span>
+                </a>
+
+                <a class="menu-item {{ request()->routeIs('wallet.history.index') ? 'active' : '' }}"
+                    href="{{ route('wallet.history.index') }}">
+
+                    <i class="fa-solid fa-wallet"></i>
+                    <span>History</span>
                 </a>
 
                 <a class="menu-item {{ request()->routeIs('wallet.tenant') ? 'active' : '' }}"
@@ -257,7 +264,7 @@
                     href="{{ route('wallet.main.index') }}">
 
                     <i class="fa-solid fa-wallet"></i>
-                    <span>Wallets</span>
+                    <span>Wallet</span>
                 </a>
 
                 <a class="menu-item {{ request()->routeIs('wallet.tenant') ? 'active' : '' }}"

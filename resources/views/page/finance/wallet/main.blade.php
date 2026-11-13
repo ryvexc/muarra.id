@@ -20,12 +20,12 @@
 
             <div>
                 <div class="wallet-balance">
-                    Rp 12.500.000
+                    {{ App\Support\Currency::format("IDR", $cashWallet->balance) }}
                 </div>
     
                 <div class="wallet-footer">
                     <span>GLOBAL ACCOUNT</span>
-                    <span>•••• 4829</span>
+                    <span>**** **** {{ explode('-', $cashWallet->uuid)[2] }} {{ explode('-', $cashWallet->uuid)[3] }}</span>
                 </div>
             </div>
         </div>
@@ -33,17 +33,17 @@
         {{-- Cashless --}}
         <div class="wallet-card cashless-card">
             <div class="wallet-card-top">
-                <span class="wallet-type">Muarra Wallet</span>
+                <span class="wallet-type">Cashless Wallet</span>
                 <i class="fa-solid fa-credit-card"></i>
             </div>
 
             <div class="wallet-balance">
-                Rp 35.800.000
+                {{ App\Support\Currency::format("IDR", $cashlessWallet->balance) }}
             </div>
 
             <div class="wallet-footer">
                 <span>GLOBAL ACCOUNT</span>
-                <span>•••• 9231</span>
+                <span>**** **** {{ explode('-', $cashlessWallet->uuid)[2] }} {{ explode('-', $cashlessWallet->uuid)[3] }}</span>
             </div>
         </div>
     </div>
@@ -83,520 +83,85 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>TYPE</th>
-                            <th>WALLET</th>
-                            <th>DESCRIPTION</th>
-                            <th style="text-align:right">AMOUNT</th>
-                            <th style="text-align:right">BALANCE</th>
-                            <th>DIBUAT PUKUL</th>
-                            <th>TANGGAL</th>
-                            <th>ACTIONS</th>
+                            <th style="width: 0">ID</th>
+                            <th style="width: 0">WALLET</th>
+                            <th style="width: 0">AMOUNT</th>
+                            <th style="width: 0">DESCRIPTION</th>
+                            <th>NOTES</th>
+                            <th style="width: 0">DIBUAT PUKUL</th>
+                            <th style="width: 0">TANGGAL</th>
+                            <th style="width: 0">ACTIONS</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        {{-- Date Group --}}
                         <tr class="date-group">
                             <td colspan="9">
                                 <div class="date-label">
                                     <i class="fa-solid fa-calendar"></i>
-                                    01 October 2026
-                                    <span>(5 Transactions)</span>
+                                    {{ Carbon\Carbon::today()->translatedFormat("d F Y") }}
+                                    <span>({{ $transactions->count() }} Transactions)</span>
                                 </div>
                             </td>
                         </tr>
 
-                        <tr>
-                            <td>
-                                <div class="order-id">
-                                    <span class="dot"></span>
-                                    #TRX-000010
-                                </div>
-                            </td>
-
-                            <td>
-                                <span class="badge success">
-                                    Deposit
-                                </span>
-                            </td>
-
-                            <td>
-                                <div class="wallet-name">
-                                    <i class="fa-solid fa-money-bill-wave"></i>
-                                    Cash Wallet
-                                </div>
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Transfer from Global Cash Wallet
-                                </strong>
-                                <br>
-                                <span style="color:var(--text-secondary)">
-                                    Malang Branch Allocation
-                                </span>
-                            </td>
-
-                            <td style="text-align:right;color:#4ade80">
-                                + Rp5.000.000
-                            </td>
-
-                            <td style="text-align:right">
-                                Rp17.500.000
-                            </td>
-
-                            <td class="date-cell">
-                                08:15
-                            </td>
-
-                            <td class="date-cell">
-                                01-10-2026
-                            </td>
-
-                            <td class="actions">
-                                <a class="icon-btn primary" title="View">
-                                    <i class="fa-solid fa-eye"></i>
-                                </a>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="order-id">
-                                    <span class="dot"></span>
-                                    #TRX-000011
-                                </div>
-                            </td>
-
-                            <td>
-                                <span class="badge warning">
-                                    Transfer
-                                </span>
-                            </td>
-
-                            <td>
-                                <div class="wallet-name">
-                                    <i class="fa-solid fa-money-bill-wave"></i>
-                                    Cash Wallet
-                                </div>
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Transfer to Malang Branch
-                                </strong>
-
-                                <br>
-
-                                <span style="color:var(--text-secondary)">
-                                    Branch Fund Distribution
-                                </span>
-                            </td>
-
-                            <td style="text-align:right;color:#f87171">
-                                - Rp2.000.000
-                            </td>
-
-                            <td style="text-align:right">
-                                Rp15.500.000
-                            </td>
-
-                            <td class="date-cell">
-                                09:30
-                            </td>
-
-                            <td class="date-cell">
-                                01-10-2026
-                            </td>
-
-                            <td class="actions">
-                                <a class="icon-btn primary" title="View">
-                                    <i class="fa-solid fa-eye"></i>
-                                </a>
-                            </td>
-                        </tr>
-
-                        {{-- Date Group --}}
-                        <tr class="date-group">
-                            <td colspan="9">
-
-                                <div class="date-label">
-                                    <i class="fa-solid fa-calendar"></i>
-                                    02 October 2026
-                                    <span>(3 Transactions)</span>
-                                </div>
-
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="order-id">
-                                    <span class="dot"></span>
-                                    #TRX-000015
-                                </div>
-                            </td>
-
-                            <td>
-                                <span class="badge success">
-                                    Deposit
-                                </span>
-                            </td>
-
-                            <td>
-                                <div class="wallet-name">
-                                    <i class="fa-solid fa-credit-card"></i>
-                                    Cashless Wallet
-                                </div>
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Marketplace Settlement
-                                </strong>
-                                <br>
-                                <span style="color:var(--text-secondary)">
-                                    Shopee / Tokopedia
-                                </span>
-                            </td>
-
-                            <td style="text-align:right;color:#4ade80">
-                                + Rp8.750.000
-                            </td>
-
-                            <td style="text-align:right">
-                                Rp46.300.000
-                            </td>
-
-                            <td class="date-cell">
-                                08:10
-                            </td>
-
-                            <td class="date-cell">
-                                02-10-2026
-                            </td>
-
-                            <td class="actions">
-                                <a class="icon-btn primary" title="View">
-                                    <i class="fa-solid fa-eye"></i>
-                                </a>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="order-id">
-                                    <span class="dot"></span>
-                                    #TRX-000015
-                                </div>
-                            </td>
-
-                            <td>
-                                <span class="badge success">
-                                    Deposit
-                                </span>
-                            </td>
-
-
-                            <td>
-                                <div class="wallet-name">
-                                    <i class="fa-solid fa-credit-card"></i>
-                                    Cashless Wallet
-                                </div>
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Marketplace Settlement
-                                </strong>
-
-                                <br>
-
-                                <span style="color:var(--text-secondary)">
-                                    Shopee / Tokopedia
-                                </span>
-                            </td>
-
-                            <td style="text-align:right;color:#4ade80">
-                                + Rp8.750.000
-                            </td>
-
-                            <td style="text-align:right">
-                                Rp46.300.000
-                            </td>
-
-                            <td class="date-cell">
-                                08:10
-                            </td>
-
-                            <td class="date-cell">
-                                02-10-2026
-                            </td>
-
-                            <td class="actions">
-                                <a class="icon-btn primary" title="View">
-                                    <i class="fa-solid fa-eye"></i>
-                                </a>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="order-id">
-                                    <span class="dot"></span>
-                                    #TRX-000015
-                                </div>
-                            </td>
-
-                            <td>
-                                <span class="badge success">
-                                    Deposit
-                                </span>
-                            </td>
-
-                            <td>
-                                <div class="wallet-name">
-                                    <i class="fa-solid fa-credit-card"></i>
-                                    Cashless Wallet
-                                </div>
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Marketplace Settlement
-                                </strong>
-                                <br>
-                                <span style="color:var(--text-secondary)">
-                                    Shopee / Tokopedia
-                                </span>
-                            </td>
-
-                            <td style="text-align:right;color:#4ade80">
-                                + Rp8.750.000
-                            </td>
-
-                            <td style="text-align:right">
-                                Rp46.300.000
-                            </td>
-
-                            <td class="date-cell">
-                                08:10
-                            </td>
-
-                            <td class="date-cell">
-                                02-10-2026
-                            </td>
-
-                            <td class="actions">
-                                <a class="icon-btn primary" title="View">
-                                    <i class="fa-solid fa-eye"></i>
-                                </a>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="order-id">
-                                    <span class="dot"></span>
-                                    #TRX-000015
-                                </div>
-                            </td>
-
-                            <td>
-                                <span class="badge success">
-                                    Deposit
-                                </span>
-                            </td>
-
-                            <td>
-                                <div class="wallet-name">
-                                    <i class="fa-solid fa-credit-card"></i>
-                                    Cashless Wallet
-                                </div>
-                            </td>
-
-                            <td>
-                                <strong>
-                                    Marketplace Settlement
-                                </strong>
-                                <br>
-                                <span style="color:var(--text-secondary)">
-                                    Shopee / Tokopedia
-                                </span>
-                            </td>
-
-                            <td style="text-align:right;color:#4ade80">
-                                + Rp8.750.000
-                            </td>
-
-                            <td style="text-align:right">
-                                Rp46.300.000
-                            </td>
-
-                            <td class="date-cell">
-                                08:10
-                            </td>
-
-                            <td class="date-cell">
-                                02-10-2026
-                            </td>
-
-                            <td class="actions">
-                                <a class="icon-btn primary" title="View">
-                                    <i class="fa-solid fa-eye"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        
+                        @forelse ($transactions as $transaction)
                             <tr>
-
                                 <td>
                                     <div class="order-id">
                                         <span class="dot"></span>
-                                        #TRX-000015
+                                        #{{ $transaction->normalizedId() }}
                                     </div>
                                 </td>
 
+                                <td>{{ ucfirst($transaction->wallet->type) }}</td>
 
-                                <td>
-                                    <span class="badge success">
-                                        Deposit
-                                    </span>
-                                </td>
-
-
-                                <td>
-                                    <div class="wallet-name">
-                                        <i class="fa-solid fa-credit-card"></i>
-                                        Cashless Wallet
-                                    </div>
-                                </td>
-
+                                @if ($transaction->type == "credit")
+                                    <td style="color:#4ade80">
+                                        +{{ App\Support\Currency::format("IDR", $transaction->amount) }}
+                                    </td>
+                                @elseif ($transaction->type == "debit")
+                                    <td style="color:#f87171">
+                                        -{{ App\Support\Currency::format("IDR", $transaction->amount) }}
+                                    </td>
+                                @endif
 
                                 <td>
                                     <strong>
-                                        Marketplace Settlement
+                                        {{ $transaction->description }}
                                     </strong>
-
                                     <br>
-
-                                    <span style="color:var(--text-secondary)">
-                                        Shopee / Tokopedia
+                                    <span style="color:var(--text-secondary); font-size: 14px">
+                                        {{ $transaction->subdescription }}
                                     </span>
                                 </td>
 
+                                <td>{{ $transaction->notes }}</td>
 
-                                <td style="text-align:right;color:#4ade80">
-                                    + Rp8.750.000
+                                <td class="date-cell" style="text-align: right">
+                                    {{ $transaction->created_at->format("H:i:s") }}
                                 </td>
-
-
-                                <td style="text-align:right">
-                                    Rp46.300.000
-                                </td>
-
 
                                 <td class="date-cell">
-                                    08:10
+                                    {{ $transaction->created_at->format("Y-m-d") }}
                                 </td>
-
-
-                                <td class="date-cell">
-                                    02-10-2026
-                                </td>
-
 
                                 <td class="actions">
-
-                                    <a class="icon-btn primary" title="View">
+                                    <button class="icon-btn primary" title="View">
                                         <i class="fa-solid fa-eye"></i>
-                                    </a>
-
+                                    </button>
                                 </td>
-
                             </tr>
+                        @empty
                             <tr>
-
-                                <td>
-                                    <div class="order-id">
-                                        <span class="dot"></span>
-                                        #TRX-000015
-                                    </div>
-                                </td>
-
-
-                                <td>
-                                    <span class="badge success">
-                                        Deposit
-                                    </span>
-                                </td>
-
-
-                                <td>
-                                    <div class="wallet-name">
-                                        <i class="fa-solid fa-credit-card"></i>
-                                        Cashless Wallet
-                                    </div>
-                                </td>
-
-
-                                <td>
-                                    <strong>
-                                        Marketplace Settlement
-                                    </strong>
-
-                                    <br>
-
-                                    <span style="color:var(--text-secondary)">
-                                        Shopee / Tokopedia
-                                    </span>
-                                </td>
-
-
-                                <td style="text-align:right;color:#4ade80">
-                                    + Rp8.750.000
-                                </td>
-
-
-                                <td style="text-align:right">
-                                    Rp46.300.000
-                                </td>
-
-
-                                <td class="date-cell">
-                                    08:10
-                                </td>
-
-
-                                <td class="date-cell">
-                                    02-10-2026
-                                </td>
-
-
-                                <td class="actions">
-
-                                    <a class="icon-btn primary" title="View">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </a>
-
-                                </td>
-
+                                <td colSpan="9999" class="date-cell" style="text-align: center">No data.</td>
                             </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
-
         </div>
-
     </div>
-
-
 </section>
 
 @endsection

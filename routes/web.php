@@ -15,6 +15,7 @@ use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\SupplyController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\TenantController;
+use App\Http\Controllers\WalletTransactionController;
 use App\Http\Middleware\AnyAuthentication;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\StaffAuthentication;
@@ -96,6 +97,8 @@ Route::prefix("/auth")->group(function () {
 Route::prefix("/finance")->group(function () {
   Route::prefix("/wallet")->group(function () {
     Route::get('/main', [WalletController::class, 'main'])->name("wallet.main.index");
+    Route::get('/history', [WalletTransactionController::class, 'index'])->name("wallet.history.index");
+    Route::get('/history/get-statement', [WalletTransactionController::class, 'exportStatement'])->name("wallet.history.get-statement");
     Route::get('/tenant', [WalletController::class, 'tenant'])->name("wallet.tenant");
   });
 })->middleware(Authenticate::class);
