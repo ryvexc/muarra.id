@@ -17,6 +17,17 @@
             <div style="display: flex; justify-content: space-between; width: 100%">
                 <div style="display: inline-flex; gap:16px; margin-bottom: 20px;">
                     <div class="form-group form-group-compact" style="width: 100%">
+                        <label>Per Page</label>
+                        <select name="per_page" required
+                            onchange="filter(this)"
+                        >
+                            @foreach ([10, 25, 50, 100, "All"] as $per_page_value)
+                                <option value="{{ $per_page_value }}" @selected(request('per_page') == $per_page_value)>{{ $per_page_value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group form-group-compact" style="width: 100%">
                         <label>Branch</label>
                         <select name="branch_id" required
                             onchange="filter(this)"
@@ -56,16 +67,28 @@
                     </div>
                 </div>
 
-                <div style="display: inline-flex">
+                <div style="display: inline-flex; gap: 20px;">
                     <div class="form-group form-group-compact" style="width: 100%">
-                        <label style="text-align: right">Export</label>
-                        <button class="btn-success">
-                            <i class="fa-solid fa-file-excel"></i>
-                        </button>
+                        <label>From</label>
+                        <input
+                            type="date"
+                            name="start_date"
+                            value="{{ request('start_date') }}"
+                            onchange="filter(this)"
+                        >
+                    </div>
+
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label>To</label>
+                        <input
+                            type="date"
+                            name="end_date"
+                            value="{{ request('end_date') }}"
+                            onchange="filter(this)"
+                        >
                     </div>
                 </div>
             </div>
-            
 
             <div class="card">
                 <div class="toolbar">
@@ -75,9 +98,34 @@
                             <path d="m21 21-4.3-4.3" />
                         </svg>
                         <input placeholder="Im looking for...">
+                        {{-- <form method="GET" action="{{ url()->current() }}" id="searchForm">
+                            <div class="query-search">
+                                <div class="query-search-input">
+                                    <i class="fas fa-search"></i>
+
+                                    <input
+                                        type="text"
+                                        name="q"
+                                        id="querySearch"
+                                        value="{{ request('q') }}"
+                                        placeholder="Search orders... (e.g. payment_type:qris)"
+                                        autocomplete="off"
+                                    >
+
+                                    <button type="button" id="clearSearch">×</button>
+                                </div>
+
+                                <div id="searchSuggestions" class="search-suggestions"></div>
+
+                                <div id="searchPreview" class="search-preview"></div>
+                            </div>
+                        </form> --}}
                     </div>
                     
                     <div class="toolbar-right">
+                        <button class="btn-success" onclick="window.location.href = '{{ route('order.export', request()->query()) }}'">
+                            <i class="fa-solid fa-file-excel"></i>
+                        </button>
                     </div>
                 </div>
                 

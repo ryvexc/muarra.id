@@ -14,6 +14,21 @@
             </button>
         </div>
         <div>
+            <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 20px;">
+                <div style="display: inline-flex; gap:16px">
+                    <span></span>
+                </div>
+
+                <div style="display: inline-flex">
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label style="text-align: right">Export</label>
+                        <button class="btn-success">
+                            <i class="fa-solid fa-file-excel"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <div class="toolbar">
                     <div class="search">

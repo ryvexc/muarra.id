@@ -21,7 +21,11 @@ use App\Http\Middleware\StaffAuthentication;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, "index"])->name("dashboard.index")->middleware(AnyAuthentication::class);
-Route::get("/orders", [OrderController::class, 'index'])->name("order.index");
+
+Route::prefix("/orders")->group(function () {
+  Route::get("/", [OrderController::class, 'index'])->name("order.index");
+  Route::get("/export", [OrderController::class, 'export'])->name("order.export");
+})->middleware(AnyAuthentication::class);
 
 Route::prefix("/auth")->group(function () {
   Route::get("/signin", [AuthController::class, 'signin'])->name("auth.signin");
