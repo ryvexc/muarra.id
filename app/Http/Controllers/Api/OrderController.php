@@ -10,10 +10,13 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Staff;
+use App\Models\Wallet;
+use App\Models\WalletTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
@@ -100,6 +103,24 @@ class OrderController extends Controller
         }
 
         $order->save();
+
+        $wallet = Wallet::where("tenant_id", $user->tenant->id)->where("branch_id", $user->branch->id)->where("type", $request->payment_type == "cash" ? "cash" : "cashless")->first();
+        $walletTransaction = new WalletTransaction();
+        $walletTransaction->wallet_id = $wallet->id;
+        $walletTransaction->type = "debit";
+        $walletTransaction->amount = $order->total;
+        $walletTransaction->balance = $wallet->balance + $order->total;
+
+        if ($request->payment_type == "cash")
+            $walletTransaction->description = "Pembayaran Tunai";
+        else if ($request->payment_type == "card")
+            $walletTransaction->description = "Pembayaran Non-Tunai";
+        else if ($request->payment_type == "qris")
+            $walletTransaction->description = "Pembayaran QR";
+
+        $walletTransaction->subdescription = "dari Penjualan " . $order->normalizedId();
+        $walletTransaction->salt = strtoupper(Str::random(4));
+        $walletTransaction->save();
 
         return Response::json([
             "message" => "Order created",

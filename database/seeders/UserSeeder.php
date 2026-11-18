@@ -44,7 +44,7 @@ class UserSeeder extends Seeder
 
         $cashlessWallet = new Wallet();
         $cashlessWallet->uuid = Str::uuid();
-        $cashlessWallet->type = "cash";
+        $cashlessWallet->type = "cashless";
         $cashlessWallet->tenant_id = $user2->tenant->id;
         $cashlessWallet->balance = 0;
         $cashlessWallet->save();

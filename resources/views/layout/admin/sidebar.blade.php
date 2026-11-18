@@ -254,12 +254,6 @@
             {{-- Finance --}}
             <div class="menu-group">
                 <span class="menu-title">Finance</span>
-
-                <a class="menu-item">
-                    <i class="fa-solid fa-chart-pie"></i>
-                    <span>Dashboard</span>
-                </a>
-
                 <a class="menu-item {{ request()->routeIs('wallet.main.index') ? 'active' : '' }}"
                     href="{{ route('wallet.main.index') }}">
 
@@ -267,11 +261,11 @@
                     <span>Wallet</span>
                 </a>
 
-                <a class="menu-item {{ request()->routeIs('wallet.tenant') ? 'active' : '' }}"
-                    href="{{ route('wallet.tenant') }}">
+                <a class="menu-item {{ request()->routeIs('wallet.history.index') ? 'active' : '' }}"
+                    href="{{ route('wallet.history.index') }}">
 
-                    <i class="fa-solid fa-building-columns"></i>
-                    <span>Tenants</span>
+                    <i class="fa-solid fa-wallet"></i>
+                    <span>History</span>
                 </a>
             </div>
 
