@@ -27,6 +27,7 @@ class Staff extends Authenticatable
     public const ID_NUMBER_LENGTH = 4;
 
     protected $table = "staffs";
+    protected $with = ["tenant", "branch"];
 
     protected function casts(): array
     {
