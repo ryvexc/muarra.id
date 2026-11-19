@@ -24,7 +24,7 @@ class WalletController extends Controller
             $cashlessWallet = Wallet::where('tenant_id', $user->tenant->id)->where("branch_id", NULL)->where("type", "cashless")->first();
         }
 
-        $transactions = WalletTransaction::whereIn("wallet_id", [$cashWallet->id, $cashlessWallet->id])->whereDate("created_at", Carbon::today())->get();
+        $transactions = WalletTransaction::whereIn("wallet_id", [$cashWallet->id, $cashlessWallet->id])->whereDate("created_at", Carbon::today())->latest()->get();
 
         return view("page.finance.wallet.main", [
             "cashWallet" => $cashWallet,

@@ -184,7 +184,7 @@ class OrderController extends Controller
 
             $walletTransaction = new WalletTransaction();
             $walletTransaction->wallet_id = $wallet->id;
-            $walletTransaction->type = "debit";
+            $walletTransaction->type = "credit";
             $walletTransaction->amount = $order->total;
             $walletTransaction->balance = $wallet->balance + $order->total;
 
@@ -196,6 +196,9 @@ class OrderController extends Controller
             $walletTransaction->subdescription = "dari Penjualan " . $order->normalizedId();
             $walletTransaction->salt = strtoupper(Str::random(4));
             $walletTransaction->save();
+
+            $wallet->balance = $walletTransaction->balance;
+            $wallet->save();
         }
 
         DB::commit();

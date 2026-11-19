@@ -146,21 +146,6 @@
                     <span>Branch</span>
                 </a>
             </div>
-
-            {{-- Analytics --}}
-            <div class="menu-group">
-                <span class="menu-title">Analytics</span>
-
-                <a class="menu-item">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <span>Sales</span>
-                </a>
-
-                <a class="menu-item">
-                    <i class="fa-solid fa-ban"></i>
-                    <span>Cancelled</span>
-                </a>
-            </div>
         @elseif (currentUser()->role_id == 3)
             {{-- Main Menu --}}
             <div class="menu-group">
@@ -266,21 +251,6 @@
 
                     <i class="fa-solid fa-wallet"></i>
                     <span>History</span>
-                </a>
-            </div>
-
-            {{-- Analytics --}}
-            <div class="menu-group">
-                <span class="menu-title">Analytics</span>
-
-                <a class="menu-item">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <span>Sales</span>
-                </a>
-
-                <a class="menu-item">
-                    <i class="fa-solid fa-ban"></i>
-                    <span>Cancelled</span>
                 </a>
             </div>
         @elseif (currentUser()->role_id == 1)

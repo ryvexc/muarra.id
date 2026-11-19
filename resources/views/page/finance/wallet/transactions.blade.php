@@ -64,7 +64,11 @@
                                     @endif
                                     
                                     <td>
-                                        <span style="color:var(--text-secondary)">
+                                        <span>
+                                            {{ $transaction->description }}
+                                        </span>
+                                        <br>
+                                        <span style="color:var(--text-secondary); font-size: 14px">
                                             {{ $transaction->subdescription }}
                                         </span>
                                     </td>
