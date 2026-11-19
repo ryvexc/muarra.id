@@ -108,7 +108,9 @@
                                 <th>HARGA MODAL</th>
                                 <th style="width: 0;">UPDATED AT</th>
                                 <th style="width: 0;">DELETED AT</th>
-                                <th style="width: 0; text-align: right">ACTION</th>
+                                @if (currentUser()->role->id <= 2)
+                                    <th style="width: 0; text-align: right">ACTION</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -124,15 +126,17 @@
                                     <td>{{ App\Support\Currency::format("IDR", $product->harga_modal) }}</td>
                                     <td class="date-cell">{{ $product->updated_at }}</td>
                                     <td class="date-cell">{{ $product->created_at }}</td>
-                                    <td class="actions">
-                                        <a class="icon-btn edit" href="{{ route('product.edit.form', ['id' => $product->id]) }}" title="Edit">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </a>
+                                    @if (currentUser()->role->id <= 2)
+                                        <td class="actions">
+                                            <a class="icon-btn edit" href="{{ route('product.edit.form', ['id' => $product->id]) }}" title="Edit">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </a>
 
-                                        <button class="icon-btn delete open-modal" data-modal="deleteModal-{{ $product->id }}" title="Delete">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </td>
+                                            <button class="icon-btn delete open-modal" data-modal="deleteModal-{{ $product->id }}" title="Delete">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    @endif
                                 </tr>
                             @empty
                                 <tr>

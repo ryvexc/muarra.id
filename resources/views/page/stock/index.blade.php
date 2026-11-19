@@ -20,10 +20,12 @@
                 <p>Manage your ingredients/stocks.</p>
             </div>
             
-            <button class="btn-primary open-modal" data-modal="addModal">
-                <i class="fa-solid fa-plus"></i>
-                New Ingredient
-            </button>
+            @if (currentUser()->role->id <= 2)
+                <button class="btn-primary open-modal" data-modal="addModal">
+                    <i class="fa-solid fa-plus"></i>
+                    New Ingredient
+                </button>
+            @endif
         </div>
         <div>
             <div style="display: flex; justify-content: space-between; width: 100%">
@@ -104,7 +106,9 @@
                                 <th style="">HARGA SATUAN</th>
                                 <th style="width: 0;">UPDATED AT</th>
                                 <th style="width: 0;">CREATED AT</th>
-                                <th style="width: 0; text-align: right">ACTIONS</th>
+                                @if (currentUser()->role->id <= 2)
+                                    <th style="width: 0; text-align: right">ACTIONS</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -148,15 +152,17 @@
                                     <td>{{ App\Support\Currency::format("IDR", $inventory->ingredient->harga_satuan) }}/{{ $inventory->ingredient->unit_of_measurement->symbol }}</td>
                                     <td class="date-cell" style="text-align: right">{{ $inventory->ingredient->updated_at }}</td>
                                     <td class="date-cell" style="text-align: right">{{ $inventory->ingredient->created_at }}</td>
-                                    <td class="actions">
-                                        <button class="icon-btn edit open-modal" title="Edit" data-modal="editModal-{{ $inventory->ingredient->id }}">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </button>
+                                    @if (currentUser()->role->id <= 2)
+                                        <td class="actions">
+                                            <button class="icon-btn edit open-modal" title="Edit" data-modal="editModal-{{ $inventory->ingredient->id }}">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
 
-                                        <button class="icon-btn delete open-modal" title="Delete" data-modal="deleteModal-{{ $inventory->ingredient->id }}">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </td>
+                                            <button class="icon-btn delete open-modal" title="Delete" data-modal="deleteModal-{{ $inventory->ingredient->id }}">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    @endif
                                 </tr>
                             @empty
                                 <tr>
@@ -201,15 +207,17 @@
                                     <td>{{ App\Support\Currency::format("IDR", $ingredient->harga_satuan) }}/{{ $ingredient->unit_of_measurement->symbol }}</td>
                                     <td class="date-cell" style="text-align: right">{{ $ingredient->updated_at }}</td>
                                     <td class="date-cell" style="text-align: right">{{ $ingredient->created_at }}</td>
-                                    <td class="actions">
-                                        <button class="icon-btn edit open-modal" title="Edit" data-modal="editModal-{{ $ingredient->id }}">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </button>
+                                    @if (currentUser()->role->id <= 2)
+                                        <td class="actions">
+                                            <button class="icon-btn edit open-modal" title="Edit" data-modal="editModal-{{ $ingredient->id }}">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
 
-                                        <button class="icon-btn delete open-modal" title="Delete" data-modal="deleteModal-{{ $ingredient->id }}">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </td>
+                                            <button class="icon-btn delete open-modal" title="Delete" data-modal="deleteModal-{{ $ingredient->id }}">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    @endif
                                 </tr>
                             @empty
                                 <tr>

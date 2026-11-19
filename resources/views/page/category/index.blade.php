@@ -41,7 +41,9 @@
                                 <th>JML. PRODUK</th>
                                 <th style="width: 0;">UPDATED AT</th>
                                 <th style="width: 0">CREATED AT</th>
-                                <th style="text-align: right; width: 0">ACTIONS</th>
+                                @if (currentUser()->role->id <= 2)
+                                    <th style="text-align: right; width: 0">ACTIONS</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -65,15 +67,17 @@
                                     <td>{{ $category->products->whereNull("deleted_at")->count() }}</td>
                                     <td class="date-cell" style="text-align: right">{{ $category->updated_at }}</td>
                                     <td class="date-cell" style="text-align: right">{{ $category->created_at }}</td>
-                                    <td class="actions">
-                                        <button class="icon-btn edit open-modal" title="Edit" data-modal="editCategoryModal-{{ $category->id }}">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </button>
+                                    @if (currentUser()->role->id <= 2)
+                                        <td class="actions">
+                                            <button class="icon-btn edit open-modal" title="Edit" data-modal="editCategoryModal-{{ $category->id }}">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
 
-                                        <button class="icon-btn delete open-modal" title="Delete" data-modal="deleteCategoryModal-{{ $category->id }}">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </td>
+                                            <button class="icon-btn delete open-modal" title="Delete" data-modal="deleteCategoryModal-{{ $category->id }}">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    @endif
                                 </tr>
                             @empty
                                 <tr>
@@ -128,7 +132,9 @@
                                 <th>JML. PRODUK</th>
                                 <th style="width: 0;">UPDATED AT</th>
                                 <th style="width: 0">CREATED AT</th>
-                                <th style="text-align: right; width: 0">ACTIONS</th>
+                                @if (currentUser()->role->id <= 2)
+                                    <th style="text-align: right; width: 0">ACTIONS</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -141,15 +147,17 @@
                                     <td>{{ $subCategory->products->whereNull("deleted_at")->count() }}</td>
                                     <td class="date-cell" style="text-align: right">{{ $subCategory->updated_at }}</td>
                                     <td class="date-cell" style="text-align: right">{{ $subCategory->created_at }}</td>
-                                    <td class="actions">
-                                        <button class="icon-btn edit open-modal" title="Edit" data-modal="editSubCategoryModal-{{ $subCategory->id }}">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </button>
+                                    @if (currentUser()->role->id <= 2)
+                                        <td class="actions">
+                                            <button class="icon-btn edit open-modal" title="Edit" data-modal="editSubCategoryModal-{{ $subCategory->id }}">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
 
-                                        <button class="icon-btn delete open-modal" title="Delete" data-modal="deleteSubCategoryModal-{{ $subCategory->id }}">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </td>
+                                            <button class="icon-btn delete open-modal" title="Delete" data-modal="deleteSubCategoryModal-{{ $subCategory->id }}">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    @endif
                                 </tr>
                             @empty
                                 <tr>

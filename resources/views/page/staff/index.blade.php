@@ -124,9 +124,11 @@
                                             <i class="fa-solid fa-pen"></i>
                                         </button>
 
-                                        <button class="icon-btn delete open-modal" title="Delete" data-modal="deleteModal-{{ $staff->id }}">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
+                                        @if (currentUser()->role->id <= 2)
+                                            <button class="icon-btn delete open-modal" title="Delete" data-modal="deleteModal-{{ $staff->id }}">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty
@@ -250,29 +252,40 @@
                             <div class="modal-body">
                                 <div class="form-group">
                                 <label>Branch</label>
-                                <select name="branch_id">
+                                <select name="branch_id" @disabled(currentUser()->role->id > 2)>
                                     <option value="" selected disabled>-- Select Branch --</option>
                                     
                                     @foreach ($branches as $branch)
                                         <option value="{{ $branch->id }}" @selected($branch->id == ($staff->branch->id ?? 0))>{{ $branch->name }}</option>
                                     @endforeach
                                 </select>
+
+                                @if (currentUser()->role->id > 2)
+                                    <input type="hidden" name="branch_id" value="{{ $staff->branch->id }}">
+                                @endif
                             </div>
 
                             <div class="form-group">
                                 <label>Staff Role</label>
-                                <select name="role_id" required>
+                                <select name="role_id" required @disabled(currentUser()->role->id > 2)>
                                     <option value="" selected disabled>-- Select Role --</option>
                                     
                                     @foreach ($roles as $role)
                                         <option value="{{ $role->id }}" @selected($role->id == $staff->role->id)>{{ $role->name }}</option>
                                     @endforeach
                                 </select>
+
+                                @if (currentUser()->role->id > 2)
+                                    <input type="hidden" name="role_id" value="{{ $staff->role->id }}">
+                                @endif
                             </div>
 
                             <div class="form-group">
                                 <label>Name</label>
-                                <input type="text" placeholder="Name" name="name" required value="{{ $staff->name }}">
+                                <input type="text" placeholder="Name" name="name" required value="{{ $staff->name }}" @disabled(currentUser()->role->id > 2)>
+                                @if (currentUser()->role->id > 2)
+                                    <input type="hidden" name="name" value="{{ $staff->name }}">
+                                @endif
                             </div>
 
                             <div class="form-group">
