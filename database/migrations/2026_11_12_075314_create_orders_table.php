@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId("discount_id")->nullable()->references("id")->on("discounts")->onDelete("SET NULL");
             $table->bigInteger("total");
             $table->enum("payment_type", ["qris", "card", "cash"]);
+            $table->enum('payment_status', ["cancelled", "pending", "paid"]);
             $table->timestamps();
         });
     }

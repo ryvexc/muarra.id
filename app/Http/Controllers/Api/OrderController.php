@@ -17,11 +17,15 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 use Illuminate\Support\Str;
+use App\Services\MidtransService;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
     public function post(Request $request)
     {
+        DB::beginTransaction();
+
         $user = Staff::find($request->user()->id);
 
         $validator = Validator::make($request->all(), [
@@ -50,6 +54,9 @@ class OrderController extends Controller
         $order->subtotal = 0;
         $order->total = 0;
         $order->payment_type = $request->payment_type;
+        $order->payment_status = $request->payment_type == "qris"
+            ? "pending"
+            : "paid";
         $order->save();
 
         $order_subtotal = 0;
@@ -65,31 +72,6 @@ class OrderController extends Controller
             $orderItem->item_price = $orderItemRequest["product"]->harga_jual;
             $orderItem->total_price = $total_price;
             $orderItem->save();
-
-            $product = Product::find($orderItemRequest["product"]->id);
-
-            foreach ($product->ingredients as $product_ingredient) {
-                $inventory = Inventory::where("branch_id", $user->branch->id)->where("tenant_id", $user->tenant->id)->where("ingredient_id", $product_ingredient->ingredient_id)->first();
-                $stock_before = $inventory->stock;
-                $quantity = $product_ingredient->quantity * $orderItemRequest["quantity"];
-
-                $inventory->stock -= $quantity;
-                $inventory->save();
-
-                $history = new InventoryHistory();
-                $history->tenant_id = $user->tenant->id;
-                $history->branch_id = $user->branch->id;
-                $history->ingredient_id = $product_ingredient->id;
-                $history->type = "out";
-                $history->quantity = -$quantity;
-                $history->stock_before = $stock_before;
-                $history->stock_after = $inventory->stock;
-                $history->reference_type = "order";
-                $history->reference_id = $order->id;
-                $history->notes = "Ingredient used for order #" . $order->normalizedId();
-                $history->created_by_staff_id = $user->id;
-                $history->save();
-            }
         }
 
         $order->subtotal = $order_subtotal;
@@ -104,27 +86,99 @@ class OrderController extends Controller
 
         $order->save();
 
-        $wallet = Wallet::where("tenant_id", $user->tenant->id)->where("branch_id", $user->branch->id)->where("type", $request->payment_type == "cash" ? "cash" : "cashless")->first();
-        $walletTransaction = new WalletTransaction();
-        $walletTransaction->wallet_id = $wallet->id;
-        $walletTransaction->type = "debit";
-        $walletTransaction->amount = $order->total;
-        $walletTransaction->balance = $wallet->balance + $order->total;
+        $qrisData = null;
 
-        if ($request->payment_type == "cash")
-            $walletTransaction->description = "Pembayaran Tunai";
-        else if ($request->payment_type == "card")
-            $walletTransaction->description = "Pembayaran Non-Tunai";
-        else if ($request->payment_type == "qris")
-            $walletTransaction->description = "Pembayaran QR";
+        // QRIS: generate QR, dont do inventory / wallet
+        if ($request->payment_type == "qris") {
+            try {
+                $midtrans = new MidtransService();
 
-        $walletTransaction->subdescription = "dari Penjualan " . $order->normalizedId();
-        $walletTransaction->salt = strtoupper(Str::random(4));
-        $walletTransaction->save();
+                $transaction = $midtrans->createQris(
+                    $order->normalizedId(),
+                    $order->total
+                );
+
+                $qrAction = collect($transaction->actions ?? [])
+                    ->firstWhere('name', 'generate-qr-code');
+
+                $qrisData = [
+                    'transaction_id' => $transaction->transaction_id,
+                    'transaction_status' => $transaction->transaction_status,
+                    'qr_url' => $qrAction?->url,
+                ];
+            } catch (\Exception $e) {
+                DB::rollBack();
+
+                return Response::json([
+                    'message' => 'Failed to create QRIS transaction',
+                    'error' => $e->getMessage(),
+                ], 500);
+            }
+        } else {
+            $this->processInventory($order, $user);
+
+            $wallet = Wallet::where("tenant_id", $user->tenant->id)
+                ->where("branch_id", $user->branch->id)
+                ->where("type", $request->payment_type == "cash" ? "cash" : "cashless")
+                ->firstOrFail();
+
+            $walletTransaction = new WalletTransaction();
+            $walletTransaction->wallet_id = $wallet->id;
+            $walletTransaction->type = "debit";
+            $walletTransaction->amount = $order->total;
+            $walletTransaction->balance = $wallet->balance + $order->total;
+
+            if ($request->payment_type == "cash")
+                $walletTransaction->description = "Pembayaran Tunai";
+            else
+                $walletTransaction->description = "Pembayaran Non-Tunai";
+
+            $walletTransaction->subdescription = "dari Penjualan " . $order->normalizedId();
+            $walletTransaction->salt = strtoupper(Str::random(4));
+            $walletTransaction->save();
+        }
+
+        DB::commit();
 
         return Response::json([
             "message" => "Order created",
-            "data" => $order
+            "data" => $order,
+            "qris" => $qrisData,
         ]);
+    }
+
+    private function processInventory(Order $order, Staff $user)
+    {
+        foreach ($order->orderItems as $orderItem) {
+            $product = Product::find($orderItem->product_id);
+
+            foreach ($product->ingredients as $product_ingredient) {
+                $inventory = Inventory::where("branch_id", $order->branch_id)
+                    ->where("tenant_id", $order->tenant_id)
+                    ->where("ingredient_id", $product_ingredient->ingredient_id)
+                    ->firstOrFail();
+
+                $stock_before = $inventory->stock;
+
+                $quantity = $product_ingredient->quantity * $orderItem->quantity;
+
+                $inventory->stock -= $quantity;
+                $inventory->save();
+
+                $history = new InventoryHistory();
+                $history->tenant_id = $order->tenant_id;
+                $history->branch_id = $order->branch_id;
+                $history->ingredient_id = $product_ingredient->ingredient_id;
+                $history->type = "out";
+                $history->quantity = -$quantity;
+                $history->stock_before = $stock_before;
+                $history->stock_after = $inventory->stock;
+                $history->reference_type = "order";
+                $history->reference_id = $order->id;
+                $history->notes = "Ingredient used for order #" . $order->normalizedId();
+                $history->created_by_staff_id = $user->id;
+                $history->save();
+            }
+        }
     }
 }

@@ -12,6 +12,8 @@ class Product extends Model
     public const ID_PREFIX = "PRD";
     public const ID_NUMBER_LENGTH = 4;
 
+    protected $with = ["category", "subcategory"];
+
     public function category()
     {
         return $this->belongsTo(ProductCategory::class, "product_category_id");

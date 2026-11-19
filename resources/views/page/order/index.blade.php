@@ -60,6 +60,19 @@
                             @endforeach
                         </select>
                     </div>
+
+                    <div class="form-group form-group-compact" style="width: 100%">
+                        <label style="white-space: nowrap">Payment Status</label>
+                        <select name="payment_status" required
+                            onchange="filter(this)"
+                        >
+                            <option value="" selected>All</option>
+
+                            @foreach (["Cancelled", "Pending", "Paid"] as $payment_status)
+                                <option value="{{ strtolower($payment_status) }}" @selected(request('payment_status') == strtolower($payment_status))>{{ $payment_status }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
                 <div style="display: inline-flex; gap: 20px;">
@@ -134,6 +147,7 @@
                                 <th style="width: 0">CUST NAME</th>
                                 <th>ITEMS</th>
                                 <th style="width: 0">PAYMENT TYPE</th>
+                                <th style="width: 0">STATUS</th>
                                 <th style="width: 0">SUBTOTAL</th>
                                 <th style="width: 0">DISCOUNT</th>
                                 <th style="width: 0">TOTAL</th>
@@ -173,6 +187,7 @@
                                         <td><span class="badge qr"><span class="dot"></span>QRIS</span></td>
                                     @endif
 
+                                    <td>{{ $order->payment_status }}</td>
                                     <td>{{ App\Support\Currency::format("IDR", $order->subtotal)  }}</td>
                                     <td>{{ $order->discount->name ?? "" }}</td>
 

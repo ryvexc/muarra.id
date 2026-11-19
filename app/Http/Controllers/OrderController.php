@@ -18,6 +18,7 @@ class OrderController extends Controller
         if ($request->filled('branch_id')) $orders->where("branch_id", $request->branch_id);
         if ($request->filled("cashier_id")) $orders->where("cashier_id", $request->cashier_id);
         if ($request->filled("payment_type")) $orders->where("payment_type", $request->payment_type);
+        if ($request->filled("payment_status")) $orders->where("payment_status", $request->payment_status);
         if ($request->filled("start_date")) $orders->whereDate("created_at", ">=", $request->start_date);
         if ($request->filled("end_date")) $orders->whereDate("created_at", "<=", $request->end_date);
 
