@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DiscountController;
+use App\Http\Controllers\Api\MidtransWebhookController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use Illuminate\Http\Request;
@@ -35,4 +36,6 @@ Route::prefix("v1")->group(function () {
         Route::post("/", [OrderController::class, "post"])->middleware("auth:sanctum");
         Route::post("/cancel/{id}", [OrderController::class, "cancelOrder"])->middleware("auth:sanctum");
     });
+
+    Route::post('midtrans/notification', [MidtransWebhookController::class, 'handle']);
 });
