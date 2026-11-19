@@ -22,6 +22,26 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    public function cancelOrder(Request $request, string $id)
+    {
+        $user = Staff::find($request->user()->id);
+
+        $order = Order::where("id", $id)->where("tenant_id", $user->tenant->id)->where("branch_id", $user->branch->id)->first();
+
+        if (!$order) return Response::json([
+            "message" => "Order not found",
+            "data" => null
+        ], 404);
+
+        $order->payment_status = "cancelled";
+        $order->save();
+
+        return Response::json([
+            "message" => "Order cancelled",
+            "data" => null
+        ]);
+    }
+
     public function post(Request $request)
     {
         DB::beginTransaction();

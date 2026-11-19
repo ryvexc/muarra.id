@@ -33,5 +33,6 @@ Route::prefix("v1")->group(function () {
 
     Route::prefix("orders")->group(function () {
         Route::post("/", [OrderController::class, "post"])->middleware("auth:sanctum");
+        Route::post("/cancel/{id}", [OrderController::class, "cancelOrder"])->middleware("auth:sanctum");
     });
 });
