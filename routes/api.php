@@ -33,8 +33,10 @@ Route::prefix("v1")->group(function () {
     });
 
     Route::prefix("orders")->group(function () {
+        Route::get("/", [OrderController::class, "getOrders"])->middleware("auth:sanctum");
         Route::post("/", [OrderController::class, "post"])->middleware("auth:sanctum");
         Route::post("/cancel/{id}", [OrderController::class, "cancelOrder"])->middleware("auth:sanctum");
+        Route::get('/status/{id}', [OrderController::class, 'getStatus'])->middleware("auth:sanctum");
     });
 
     Route::post('midtrans/notification', [MidtransWebhookController::class, 'handle']);

@@ -42,6 +42,46 @@ class OrderController extends Controller
         ]);
     }
 
+    public function getStatus(Request $request, string $id)
+    {
+        $user = Staff::find($request->user()->id);
+
+        $order = Order::where('id', $id)
+            ->where('tenant_id', $user->tenant->id)
+            ->where('branch_id', $user->branch->id)
+            ->first();
+
+        if (!$order) {
+            return Response::json([
+                'message' => 'Order not found',
+                'data' => null
+            ], 404);
+        }
+
+        return Response::json([
+            'data' => [
+                'id' => $order->id,
+                'payment_status' => $order->payment_status,
+            ]
+        ]);
+    }
+
+    public function getOrders(Request $request)
+    {
+        $user = Staff::find($request->user()->id);
+
+        $order = Order::where('tenant_id', $user->tenant->id)
+            ->where('branch_id', $user->branch->id)
+            ->whereDate('created_at', now()->toDateString())
+            ->latest()
+            ->get();
+
+        return Response::json([
+            "message" => "Get orders success",
+            "data" => $order
+        ]);
+    }
+
     public function post(Request $request)
     {
         DB::beginTransaction();
