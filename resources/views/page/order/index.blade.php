@@ -187,9 +187,29 @@
                                         <td><span class="badge qr"><span class="dot"></span>QRIS</span></td>
                                     @endif
 
-                                    <td>{{ $order->payment_status }}</td>
+                                    @if ($order->payment_status == "cancelled")
+                                        <td style="text-align: center;">
+                                            <span class="badge danger" style="padding-left: 12px;">Cancelled</span>
+                                        </td>
+                                    @elseif($order->payment_status == "pending")
+                                        <td style="text-align: center;">
+                                            <span class="badge warning" style="padding-left: 12px;">Pending</span>
+                                        </td>
+                                    @elseif($order->payment_status == "paid")
+                                        <td style="text-align: center;">
+                                            <span class="badge success" style="padding-left: 12px;">Paid</span>
+                                        </td>
+                                    @endif
+
                                     <td>{{ App\Support\Currency::format("IDR", $order->subtotal)  }}</td>
-                                    <td>{{ $order->discount->name ?? "" }}</td>
+
+                                    @if($order->discount?->type == "percentage")
+                                        <td>-{{ App\Support\Currency::format("IDR", $order->subtotal * $order->discount->value/100) ?? "" }}</td>
+                                    @elseif($order->discount?->type == "amount")
+                                        <td>-{{ App\Support\Currency::format("IDR", $order->discount->value) ?? "" }}</td>
+                                    @else
+                                        <td></td>
+                                    @endif
 
                                     <td class="amount">{{ App\Support\Currency::format("IDR", $order->total) }}</td>
                                     <td class="date-cell" style="text-align: right">{{ Carbon\Carbon::parse($order->created_at)->format('d M Y · H:i') }}</td>

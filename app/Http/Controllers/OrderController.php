@@ -14,7 +14,7 @@ class OrderController extends Controller
 {
     public function filteredOrders(Request $request, Staff | User $user)
     {
-        $orders = Order::query()->where("tenant_id", $user->tenant->id);
+        $orders = Order::query()->where("tenant_id", $user->tenant->id)->latest();
         if ($request->filled('branch_id')) $orders->where("branch_id", $request->branch_id);
         if ($request->filled("cashier_id")) $orders->where("cashier_id", $request->cashier_id);
         if ($request->filled("payment_type")) $orders->where("payment_type", $request->payment_type);

@@ -139,11 +139,11 @@
                     <span>History</span>
                 </a>
 
-                <a class="menu-item {{ request()->routeIs('wallet.tenant') ? 'active' : '' }}"
-                    href="{{ route('wallet.tenant') }}">
+                <a class="menu-item {{ request()->routeIs('wallet.branch') ? 'active' : '' }}"
+                    href="{{ route('wallet.branch') }}">
 
                     <i class="fa-solid fa-building-columns"></i>
-                    <span>Tenants</span>
+                    <span>Branch</span>
                 </a>
             </div>
 

@@ -99,7 +99,7 @@ Route::prefix("/finance")->group(function () {
     Route::get('/main', [WalletController::class, 'main'])->name("wallet.main.index");
     Route::get('/history', [WalletTransactionController::class, 'index'])->name("wallet.history.index");
     Route::get('/history/get-statement', [WalletTransactionController::class, 'exportStatement'])->name("wallet.history.get-statement");
-    Route::get('/tenant', [WalletController::class, 'tenant'])->name("wallet.tenant");
+    Route::get('/branch', [WalletController::class, 'tenant'])->name("wallet.branch");
   });
 })->middleware(Authenticate::class);
 
